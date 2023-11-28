@@ -5,6 +5,7 @@ export default {
     extend: {
       colors: {
         primary: {
+          100: "#414440",
           300: "#3c5693",
           500: "#7aa6d9",
           700: "#a3e1fe",
@@ -58,8 +59,8 @@ export default {
         md: "1060px",
       },
       backgroundImage: (theme) => ({
-        "gradient-bg":
-          "linear-gradient( 200deg, var(--color-bg-secondary), var(--color-primary-100))",
+        "gradient-header": "linear-gradient( 200deg, #000000, #414440)",
+        "gradient-footer": "linear-gradient( 160deg, #000000, #414440)",
       }),
     },
   },
