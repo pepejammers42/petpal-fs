@@ -57,6 +57,10 @@ export default {
         sm: "768px",
         md: "1060px",
       },
+      backgroundImage: (theme) => ({
+        "gradient-bg":
+          "linear-gradient( 200deg, var(--color-bg-secondary), var(--color-primary-100))",
+      }),
     },
   },
   plugins: [],
