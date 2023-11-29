@@ -45,7 +45,7 @@ module.exports = {
         },
         "box-shadow": "#00000025",
       },
-      fontFmaily: {
+      fontFamily: {
         righteous: ["Righteous", "sans-serif"],
         tenorsans: ["Tenor Sans", "sans-serif"],
         fahkwang: ["Fahkwang", "sans-serif"],
