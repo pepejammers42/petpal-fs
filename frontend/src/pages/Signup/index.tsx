@@ -1,37 +1,26 @@
+import { Link } from "react-router-dom";
+
+// TODO: css elements
 const Signup = () => {
   return (
     <>
-      <h1 className="text-white">Welcome!</h1>
-      <p className="text-white">
-        This is a website made for dedicated basketball fans. You may use the
-        navigation links above to look up information about basketball players,
-        teams, and all games that have been officially recorded.
-      </p>
-      <p className="text-white">
-        This is a website made for dedicated basketball fans. You may use the
-        navigation links above to look up information about basketball players,
-        teams, and all games that have been officially recorded.
-      </p>
-      <p className="text-white">
-        This is a website made for dedicated basketball fans. You may use the
-        navigation links above to look up information about basketball players,
-        teams, and all games that have been officially recorded.
-      </p>
-      <p className="text-white">
-        This is a website made for dedicated basketball fans. You may use the
-        navigation links above to look up information about basketball players,
-        teams, and all games that have been officially recorded.
-      </p>
-      <p className="text-white">
-        This is a website made for dedicated basketball fans. You may use the
-        navigation links above to look up information about basketball players,
-        teams, and all games that have been officially recorded.
-      </p>
-      <p className="text-white">
-        This is a website made for dedicated basketball fans. You may use the
-        navigation links above to look up information about basketball players,
-        teams, and all games that have been officially recorded.
-      </p>
+      <div className="pt-8 w-full mx-auto flex flex-col justify-between items-center gap-2">
+        <h1 className="text-6xl font-noto">I am ...</h1>
+        <div className="flex flex-col gap-4">
+          <Link
+            to="/signup-seeker"
+            className="border-primary-100 border-2 rounded-md px-4 py-1"
+          >
+            Looking to adopt a pet
+          </Link>
+          <Link
+            to="/signup-shelter"
+            className="border-primary-100 border-2 rounded-md px-4 py-1"
+          >
+            A pet shelter
+          </Link>
+        </div>
+      </div>
     </>
   );
 };

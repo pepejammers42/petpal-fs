@@ -9,6 +9,7 @@ type Props = {};
 // TODO: css design update
 // TODO: add transition on menu page (responsive)
 // TODO: fix paragraphs with proper links
+// TODO: add one more navbar for the logged in user
 
 const Layout = (props: Props) => {
   const flexBetween = "flex justify-between items-center";
