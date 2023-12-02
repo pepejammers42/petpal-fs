@@ -1,38 +1,59 @@
+import React, { useState, useEffect } from "react";
+import axios from "../../api/axios";
+
+type UserType = {
+  // Define the user data structure according to your backend
+  id: number;
+  email: string;
+  first_name: string;
+  lastName: string;
+  // Add other relevant fields
+};
+
 const Home = () => {
+  const [userData, setUserData] = useState<UserType | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get<UserType>("/accounts/seeker/1/");
+        console.log(response);
+        setUserData(response.data);
+        console.log("yo");
+        console.log(userData);
+      } catch (err) {
+        setError("Failed to fetch user data.");
+        console.error("Error fetching user data:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
-    <>
-      <h1 className="text-white">Welcome!</h1>
-      <p className="text-white">
-        This is a website made for dedicated basketball fans. You may use the
-        navigation links above to look up information about basketball players,
-        teams, and all games that have been officially recorded.
-      </p>
-      <p className="text-white">
-        This is a website made for dedicated basketball fans. You may use the
-        navigation links above to look up information about basketball players,
-        teams, and all games that have been officially recorded.
-      </p>
-      <p className="text-white">
-        This is a website made for dedicated basketball fans. You may use the
-        navigation links above to look up information about basketball players,
-        teams, and all games that have been officially recorded.
-      </p>
-      <p className="text-white">
-        This is a website made for dedicated basketball fans. You may use the
-        navigation links above to look up information about basketball players,
-        teams, and all games that have been officially recorded.
-      </p>
-      <p className="text-white">
-        This is a website made for dedicated basketball fans. You may use the
-        navigation links above to look up information about basketball players,
-        teams, and all games that have been officially recorded.
-      </p>
-      <p className="text-white">
-        This is a website made for dedicated basketball fans. You may use the
-        navigation links above to look up information about basketball players,
-        teams, and all games that have been officially recorded.
-      </p>
-    </>
+    <div>
+      {userData ? (
+        <div>
+          <h1>Welcome, {userData.first_name}!</h1>
+          <p>Email: {userData.email}</p>
+          {/* Render other user details as needed */}
+        </div>
+      ) : (
+        <div>You are not logged in.</div>
+      )}
+    </div>
   );
 };
 

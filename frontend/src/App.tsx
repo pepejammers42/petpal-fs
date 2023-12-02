@@ -6,22 +6,25 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import SignupSeeker from "./pages/SignupSeeker";
 import SignupShelter from "./pages/SignupShelter";
+import AuthProvider from "./context/AuthProvider";
 
 function App() {
   return (
     <div>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Home />} />
-            <Route path="/shelter" element={<Shelter />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/signup-shelter" element={<SignupShelter />} />
-            <Route path="/signup-seeker" element={<SignupSeeker />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Home />} />
+              <Route path="/shelter" element={<Shelter />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/signup-shelter" element={<SignupShelter />} />
+              <Route path="/signup-seeker" element={<SignupSeeker />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </div>
   );
 }
