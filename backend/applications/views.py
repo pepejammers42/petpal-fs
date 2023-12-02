@@ -31,6 +31,10 @@ class ApplicationCreate(ListCreateAPIView):
     def perform_create(self, serializer):
         pet = get_object_or_404(PetListing, id=self.kwargs['pk'])
 
+        existing_application = Application.objects.filter(applicant=self.request.user, pet_listing=pet).exists()
+        if existing_application:
+            raise ValidationError({'detail': 'You already have an application for this pet.'})
+
         if pet.status != 'available':
             raise ValidationError({'detail': 'Pet is not available for application.'})
 
