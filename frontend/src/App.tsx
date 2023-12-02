@@ -6,6 +6,7 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import SignupSeeker from "./pages/SignupSeeker";
 import SignupShelter from "./pages/SignupShelter";
+import PetAdoption from "./pages/PetAdoption";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/signup-shelter" element={<SignupShelter />} />
             <Route path="/signup-seeker" element={<SignupSeeker />} />
+            <Route path="/applications/pets/:petId/" element={<PetAdoption />} />
           </Route>
         </Routes>
       </BrowserRouter>
