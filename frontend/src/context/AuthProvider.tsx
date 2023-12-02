@@ -32,6 +32,14 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       console.log(access);
       localStorage.setItem("token", access);
       setToken(access);
+    } catch (error) {
+      // Handle error
+    }
+  };
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    setToken(null);
   };
   return (
     <AuthContext.Provider value={{ token, login, logout }}>
