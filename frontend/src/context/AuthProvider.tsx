@@ -15,6 +15,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [token, setToken] = useState<string | null>(
     localStorage.getItem("token"),
   );
+  const [user, setUser] = useState<string | null>(null);
 
   useEffect(() => {
     if (token) {
@@ -27,11 +28,11 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const login = async (credentials: LoginCredentialsType) => {
     try {
       const response = await axios.post("/api/token/", credentials);
-      const { access } = response.data;
-      console.log(response);
-      console.log(access);
+      const { access, user } = response.data;
       localStorage.setItem("token", access);
+      localStorage.setItem("user", JSON.stringify(user));
       setToken(access);
+      setUser(user);
     } catch (error) {
       // Handle error
     }
@@ -39,10 +40,12 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setToken(null);
+    setUser(null);
   };
   return (
-    <AuthContext.Provider value={{ token, login, logout }}>
+    <AuthContext.Provider value={{ token, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
