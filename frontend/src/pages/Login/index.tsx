@@ -1,55 +1,49 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import type { FieldValues } from "react-hook-form";
+import { z } from "zod";
+import { useAuth } from "../../hooks/useAuth";
+
 // TODO: Forget password maybe as a feature.
+
+const schema = z.object({
+  email: z.string().email(),
+  password: z.string(),
+});
 const Login = () => {
+  const { login } = useAuth();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit = async (data: FieldValues) => {
+    // TODO: send to server
+    try {
+      // Assuming 'data' contains 'email' and 'password'
+      await login({ email: data.email, password: data.password });
+      // Handle successful login, e.g., redirecting the user or showing a success message
+    } catch (error) {
+      // Handle login errors, e.g., showing an error message
+    }
+    reset();
+  };
   return (
-    <>
-      <div className="w-full max-w-xs mx-auto pt-8">
-        <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-          <div className="mb-4">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="username"
-            >
-              Email
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="username"
-              type="text"
-            />
-          </div>
-          <div className="mb-6">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="password"
-            >
-              Password
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-              id="password"
-              type="password"
-            />
-          </div>
-          <div className="flex items-center justify-between">
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              type="button"
-            >
-              Sign In
-            </button>
-            <a
-              className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
-              href="#"
-            >
-              Forgot Password?
-            </a>
-          </div>
-        </form>
-        <p className="text-center text-gray-500 text-xs">
-          &copy;2020 PetPal. All rights reserved.
-        </p>
-      </div>
-    </>
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-2">
+      <input {...register("email")} type="email" placeholder="Email" />
+      <input {...register("password")} placeholder="Password" type="password" />
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="bg-blue-500 disabled:bg-gray-500 py-2 rounded"
+      >
+        Submit
+      </button>
+    </form>
   );
 };
 
