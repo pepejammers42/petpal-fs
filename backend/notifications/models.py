@@ -41,5 +41,7 @@ class Notification(models.Model):
     object_id = models.PositiveIntegerField() # ID of the assosciated model
     content_object = GenericForeignKey('content_type','object_id')
 
+    link = models.CharField(max_length=255, blank=True, null=True)
+
     def __str__(self):
         return self.message
