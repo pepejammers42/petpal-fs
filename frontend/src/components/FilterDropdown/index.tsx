@@ -4,36 +4,43 @@ interface FilterDropdownProps {
   title: string;
   options: string[];
   onFilterChange: (selectedFilters: string[]) => void;
+  dropdownId: string; 
+  enableSearch?: boolean;
 }
 
-const FilterDropdown: React.FC<FilterDropdownProps> = ({ title, options, onFilterChange }) => {
+const FilterDropdown: React.FC<FilterDropdownProps> = ({ title, options, onFilterChange, dropdownId, enableSearch = true }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredOptions, setFilteredOptions] = useState<string[]>(options);
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    // Close dropdown when clicking outside
-    const handleOutsideClick = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
+//   useEffect(() => {
+//     // Close dropdown when clicking outside
+//     const handleOutsideClick = (event: MouseEvent) => {
+//       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+//         setIsOpen(false);
+//       }
+//     };
 
-    document.addEventListener('mousedown', handleOutsideClick);
+//     document.addEventListener('mousedown', handleOutsideClick);
 
-    return () => {
-      document.removeEventListener('mousedown', handleOutsideClick);
-    };
-  }, []);
+//     return () => {
+//       document.removeEventListener('mousedown', handleOutsideClick);
+//     };
+//   }, []);
 
   useEffect(() => {
     // Filter options based on search term
-    const lowerCaseSearchTerm = searchTerm.toLowerCase();
-    const filtered = options.filter((option) => option.toLowerCase().startsWith(lowerCaseSearchTerm));
-    setFilteredOptions(filtered);
-  }, [searchTerm, options]);
+    if (enableSearch) {
+      const lowerCaseSearchTerm = searchTerm.toLowerCase();
+      const filtered = options.filter((option) => option.toLowerCase().startsWith(lowerCaseSearchTerm));
+      setFilteredOptions(filtered);
+    } else {
+      // If search is disabled, use all options
+      setFilteredOptions(options);
+    }
+  }, [searchTerm, options, enableSearch]);
 
   const toggleDropdown = () => {
     setIsOpen((prev) => !prev);
@@ -56,28 +63,30 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({ title, options, onFilte
 
   return (
     <div className="dropdown" ref={dropdownRef}>
-      <button className="btn btn-secondary w-full" onClick={toggleDropdown}>
+      <button className="btn btn-secondary w-4/6 py-2 mt-4 bg-primary-100 text-white rounded-md" onClick={toggleDropdown}>
         {title}
       </button>
       {isOpen && (
-        <div className="dropdown-menu w-full">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="input-search p-2 mb-2"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+        <div className="dropdown-menu w-4/6">
+          {enableSearch && (
+            <input
+              type="text"
+              placeholder="Search..."
+              className="input-search p-2 mb-2"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          )}
           {filteredOptions.map((option) => (
             <div key={option} className="flex items-center p-2">
               <input
                 type="checkbox"
-                id={option}
+                id={`${dropdownId}-${option}`} // Use dropdownId to make IDs unique
                 checked={selectedFilters.includes(option)}
                 onChange={() => handleOptionClick(option)}
                 className="mr-2"
               />
-              <label htmlFor={option} className={`flex-1 ${selectedFilters.includes(option) ? 'text-blue-500' : ''}`}>
+              <label htmlFor={`${dropdownId}-${option}`} className={`flex-1 ${selectedFilters.includes(option) ? 'text-blue-500' : ''}`}>
                 {option}
               </label>
             </div>
