@@ -9,6 +9,8 @@ import SignupShelter from "./pages/SignupShelter";
 import AuthProvider from "./context/AuthProvider";
 import PetAdoption from "./pages/PetAdoption";
 import PetCreation from "./pages/PetCreation";
+import ShelterAppList from "./pages/ShelterAppList";
+import Application from "./pages/Application";
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
               <Route path="/signup-shelter" element={<SignupShelter />} />
               <Route path="/signup-seeker" element={<SignupSeeker />} />
               <Route path="/applications/pets/:petId/" element={<PetAdoption />} />
+              <Route path="/applications/" element={<ShelterAppList />} />
+              <Route path="/applications/:appId/" element={<Application />} />
               <Route path="/pet_listings/" element={<PetCreation />} />
             </Route>
           </Routes>
