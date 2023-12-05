@@ -7,18 +7,18 @@ const PetForm = () => {
   const schema = z.object({
     name: z.string().min(1).max(20),
     description: z.string(),
-    status: z.string().min(1).max(10), // Add validation as needed
+    status: z.string().min(1).max(10),
     breed: z.string().min(1).max(20),
     age: z.number().int().positive(),
-    size: z.string().min(1).max(10), // Add validation as needed
+    size: z.string().min(1).max(10),
     color: z.string().min(1).max(10),
-    gender: z.string().min(1).max(10), // Add validation as needed
-    avatar: z.custom((value) => {
-      if (!(value instanceof File) || !value.name) {
-        return false;
-      }
-      return true;
-    })
+    gender: z.string().min(1).max(10),
+    // This took so long to get working :)))
+    avatar: z.any().refine((data: FileList | null) => {
+      if (data && data.length > 0) {return true;}
+      return false;
+    }, 
+    {message: "Please upload an avatar image."}),
   });
   type ValidationSchemaType = z.infer<typeof schema>
 
@@ -75,14 +75,8 @@ const PetForm = () => {
       {errors.gender && <p className="text-red-500 col-span-full">{errors.gender.message}</p>}
 
       <label htmlFor="avatar" className="">Avatar:</label>
-      <input
-        {...register("avatar")}
-        id="avatar"
-        type="file"
-        onChange={(e) => {
-          register("avatar").onChange(e);
-        }}
-        className="w-full"
+      <input {...register("avatar")} id="avatar" accept="image/*" type="file" className="w-full"
+        onChange={(e) => { register("avatar").onChange(e); }}
       />
       {errors.avatar && <p className="text-red-500 col-span-full">{errors.avatar.message?.toString()}</p>}
 
