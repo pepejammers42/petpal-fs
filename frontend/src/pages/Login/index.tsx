@@ -24,9 +24,7 @@ const Login = () => {
   const onSubmit = async (data: FieldValues) => {
     // TODO: send to server
     try {
-      // Assuming 'data' contains 'email' and 'password'
       await login({ email: data.email, password: data.password });
-      // Handle successful login, e.g., redirecting the user or showing a success message
     } catch (error) {
       // Handle login errors, e.g., showing an error message
     }

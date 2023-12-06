@@ -18,11 +18,19 @@ const Home = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get<UserType>("/accounts/seeker/1/");
+        const userType = localStorage.getItem("user");
+        const userId = localStorage.getItem("userID");
+
+        if (!userType || !userId) {
+          setError("User information not found in local storage.");
+          return;
+        }
+
+        const url = `/accounts/${userType}/${userId}`;
+        const response = await axios.get<UserType>(url);
+
         console.log(response);
         setUserData(response.data);
-        console.log("yo");
-        console.log(userData);
       } catch (err) {
         setError("Failed to fetch user data.");
         console.error("Error fetching user data:", err);
