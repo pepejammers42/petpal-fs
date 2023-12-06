@@ -80,12 +80,12 @@ const Layout = (props: Props) => {
       className="absolute right-0 top-7 mt-10 py-2 w-48 bg-white rounded-md shadow-xl z-50"
       ref={profileRef}
     >
-      <a
-        href="/profile"
+      <Link
+        to="/profile"
         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
       >
         Profile
-      </a>
+      </Link>
       <a
         href="/settings"
         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -267,7 +267,7 @@ const Layout = (props: Props) => {
       <main className="pt-12 md:pt-20">
         <Outlet />
       </main>
-      <footer>
+      <footer className="pb-12 md:pb-20">
         <div
           className={`${flexBetween} fixed bottom-0 z-30 w-full bg-gradient-header h-12 md:h-20 px-4`}
         >

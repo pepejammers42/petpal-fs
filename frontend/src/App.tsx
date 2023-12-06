@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import SignupSeeker from "./pages/SignupSeeker";
 import SignupShelter from "./pages/SignupShelter";
 import AuthProvider from "./context/AuthProvider";
+import UserProfile from "./pages/UserProfile";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
               <Route path="/signup" element={<Signup />} />
               <Route path="/signup-shelter" element={<SignupShelter />} />
               <Route path="/signup-seeker" element={<SignupSeeker />} />
+              <Route path="/profile" element={<UserProfile />} />
             </Route>
           </Routes>
         </BrowserRouter>
