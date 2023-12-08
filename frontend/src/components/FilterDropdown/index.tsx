@@ -3,41 +3,25 @@ import React, { useState, useEffect, useRef } from 'react';
 interface FilterDropdownProps {
   title: string;
   options: string[];
-  onFilterChange: (selectedFilters: string[]) => void;
-  dropdownId: string; 
+  onFilterChange: (selectedFilter: string) => void;
+  dropdownId: string;
   enableSearch?: boolean;
 }
 
-const FilterDropdown: React.FC<FilterDropdownProps> = ({ title, options, onFilterChange, dropdownId, enableSearch = true }) => {
+  const FilterDropdown: React.FC<FilterDropdownProps> = ({ title, options, onFilterChange, dropdownId, enableSearch = true }) => {
+
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredOptions, setFilteredOptions] = useState<string[]>(options);
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const [selectedFilter, setSelectedFilter] = useState<string>('');
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-//   useEffect(() => {
-//     // Close dropdown when clicking outside
-//     const handleOutsideClick = (event: MouseEvent) => {
-//       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-//         setIsOpen(false);
-//       }
-//     };
-
-//     document.addEventListener('mousedown', handleOutsideClick);
-
-//     return () => {
-//       document.removeEventListener('mousedown', handleOutsideClick);
-//     };
-//   }, []);
-
   useEffect(() => {
-    // Filter options based on search term
     if (enableSearch) {
       const lowerCaseSearchTerm = searchTerm.toLowerCase();
       const filtered = options.filter((option) => option.toLowerCase().startsWith(lowerCaseSearchTerm));
       setFilteredOptions(filtered);
     } else {
-      // If search is disabled, use all options
       setFilteredOptions(options);
     }
   }, [searchTerm, options, enableSearch]);
@@ -47,19 +31,12 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({ title, options, onFilte
   };
 
   const handleOptionClick = (option: string) => {
-    setSelectedFilters((prevFilters) => {
-      if (prevFilters.includes(option)) {
-        return prevFilters.filter((filter) => filter !== option);
-      } else {
-        return [...prevFilters, option];
-      }
-    });
+    setSelectedFilter(option);
   };
 
   useEffect(() => {
-    // Notify parent component of filter changes
-    onFilterChange(selectedFilters);
-  }, [selectedFilters]);
+    onFilterChange(selectedFilter);
+  }, [selectedFilter]);
 
   return (
     <div className="dropdown" ref={dropdownRef}>
@@ -80,13 +57,13 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({ title, options, onFilte
           {filteredOptions.map((option) => (
             <div key={option} className="flex items-center p-2">
               <input
-                type="checkbox"
-                id={`${dropdownId}-${option}`} // Use dropdownId to make IDs unique
-                checked={selectedFilters.includes(option)}
+                type="radio"
+                id={`${dropdownId}-${option}`}
+                checked={selectedFilter === option}
                 onChange={() => handleOptionClick(option)}
                 className="mr-2"
               />
-              <label htmlFor={`${dropdownId}-${option}`} className={`flex-1 ${selectedFilters.includes(option) ? 'text-blue-500' : ''}`}>
+              <label htmlFor={`${dropdownId}-${option}`} className={`flex-1 ${selectedFilter === option ? 'text-blue-500' : ''}`}>
                 {option}
               </label>
             </div>
