@@ -59,7 +59,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({ title, options, onFilte
   useEffect(() => {
     // Notify parent component of filter changes
     onFilterChange(selectedFilters);
-  }, [selectedFilters, onFilterChange]);
+  }, [selectedFilters]);
 
   return (
     <div className="dropdown" ref={dropdownRef}>

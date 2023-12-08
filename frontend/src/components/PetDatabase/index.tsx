@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PetCard, { Pet } from '../PetCard';
+import axios from "../../api/axios";
+
 
 interface Filter {
   breed?: string;
@@ -26,10 +28,11 @@ const PetDatabase: React.FC<PetDatabaseProps> = ({ searchInput, filters }) => {
       }).toString();
 
       const queryString = queryParams ? `?${queryParams}` : '';
-      const response = await fetch(`/pet_listings${queryString}`);
-      const data = await response.json();
+      const response = await axios.get(`/pet_listings${queryString}`);
+      const data = await response.data;
+      console.log(data);
 
-      setPets(data);
+      setPets(data.results);
     } catch (error) {
       console.error("Failed to fetch pets:", error);
     }
@@ -38,7 +41,8 @@ const PetDatabase: React.FC<PetDatabaseProps> = ({ searchInput, filters }) => {
   // Use useEffect to fetch pets data when the component mounts and when filters or search input change
   useEffect(() => {
     fetchPets();
-  }, [filters, searchInput]);
+  // }, [filters, searchInput]);
+  }, [filters]);
 
   return (
     <div className="pet-database">

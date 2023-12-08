@@ -68,9 +68,11 @@ const Layout = (props: Props) => {
                       <p className="px-6 py-4 hover:py-5 hover:text-fg-alt-3 hover:bg-primary-100">
                         Pets
                       </p>
-                      <p className="px-6 py-4 hover:py-5 hover:text-fg-alt-3 hover:bg-primary-100">
+                      <Link
+                      to="/search"
+                       className="px-6 py-4 hover:py-5 hover:text-fg-alt-3 hover:bg-primary-100">
                         Explore
-                      </p>
+                      </Link>
                     </div>
                   ) : (
                     <button>
