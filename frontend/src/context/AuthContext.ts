@@ -1,19 +1,18 @@
 import { createContext } from "react";
 
-type AuthUser = {
+export type AuthUser = {
   avatar: string;
   phone_number: string;
-  created_at: string;
 };
 
-type SeekerUser = AuthUser & {
+export type SeekerUser = AuthUser & {
   first_name: string;
   last_name: string;
   location: string;
   preference?: string;
 };
 
-type ShelterUser = AuthUser & {
+export type ShelterUser = AuthUser & {
   shelter_name: string;
   address: string;
   description: string;

@@ -1,7 +1,6 @@
 import logo from "../../assets/logo.png";
 import defaultProfile from "../../assets/default.png";
 import useMediaQuery from "../../hooks/usemediaQuery";
-import axios from "../../api/axios";
 import { useState, useEffect, useRef } from "react";
 import { ChevronDoubleDownIcon, BellIcon } from "@heroicons/react/24/solid";
 import { Outlet, Link } from "react-router-dom";
@@ -19,33 +18,11 @@ const Layout = (props: Props) => {
   const isAboveMedium = useMediaQuery("(min-width: 1060px)");
   const [isOpen, setIsOpen] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const { user, userID, logout } = useAuth();
+  const { user, logout } = useAuth();
 
   let menuRef = useRef<HTMLDivElement>(null);
   let profileRef = useRef<HTMLImageElement>(null);
   let iconRef = useRef<HTMLImageElement>(null);
-  const [userAvatar, setUserAvatar] = useState<string>(defaultProfile);
-
-  useEffect(() => {
-    // ... other useEffect logic
-    const fetchUserProfile = async () => {
-      if (user) {
-        try {
-          console.log("fetching user profile");
-          const response = await axios.get(`/accounts/${user}/${userID}/`);
-          if (response.data.avatar) {
-            setUserAvatar(response.data.avatar);
-          } else {
-            setUserAvatar(defaultProfile);
-          }
-        } catch (error) {
-          console.error("Error fetching user profile:", error);
-        }
-      }
-    };
-
-    fetchUserProfile();
-  }, [user, userID]);
 
   useEffect(() => {
     let handler = (e: MouseEvent) => {
@@ -133,7 +110,7 @@ const Layout = (props: Props) => {
                     <div
                       className={`${flexBetween} gap-4 font-fahkwang text-xl text-fg-alt-1 h-20`}
                     >
-                      {user === "seeker" ? (
+                      {localStorage.getItem("user") === "seeker" ? (
                         // Render for Seeker
                         <>
                           <Link
@@ -161,7 +138,7 @@ const Layout = (props: Props) => {
                             Favorites
                           </Link>
                         </>
-                      ) : user === "shelter" ? (
+                      ) : localStorage.getItem("user") === "shelter" ? (
                         // Render for Shelter
                         <>
                           <Link
@@ -222,9 +199,9 @@ const Layout = (props: Props) => {
                       <BellIcon className="h-6 w-6 text-fg-alt-3" />{" "}
                       {/* Bell icon */}
                       <img
-                        className="h-10 md:h-14"
-                        alt="logo"
-                        src={userAvatar}
+                        className="h-10 md:h-14 rounded-full"
+                        alt="profile icon"
+                        src={user.avatar ? user.avatar : defaultProfile}
                         onClick={() => setShowDropdown((prev) => !prev)}
                         ref={iconRef}
                       />

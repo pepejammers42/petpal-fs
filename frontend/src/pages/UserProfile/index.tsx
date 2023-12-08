@@ -1,45 +1,9 @@
-import { useState, useEffect } from "react";
-import axios from "../../api/axios";
+import userAvatar from "../../assets/default.png";
 import { Link } from "react-router-dom";
-
-type UserType = {
-  id: number;
-  email: string;
-  first_name: string;
-  lastName: string;
-};
+import { useAuth } from "../../hooks/useAuth";
 
 const UserProfile = () => {
-  const [userData, setUserData] = useState<UserType | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const userType = localStorage.getItem("user");
-        const userId = localStorage.getItem("userID");
-
-        if (!userType || !userId) {
-          setError("User information not found in local storage.");
-          return;
-        }
-
-        const url = `/accounts/${userType}/${userId}`;
-        const response = await axios.get<UserType>(url);
-
-        console.log(response);
-        setUserData(response.data);
-      } catch (err) {
-        setError("Failed to fetch user data.");
-        console.log("Error fetching user data:");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchUserData();
-  }, []);
+  const { user } = useAuth();
 
   return (
     <>
@@ -58,7 +22,21 @@ const UserProfile = () => {
             <h2>User Profile</h2>
             <div className="bg-white p-6 rounded-md">
               <p>Profile Photo</p>
+              {user && user.avatar !== null ? (
+                <img
+                  className="h-10 md:h-14"
+                  alt="profile icon"
+                  src={user.avatar}
+                />
+              ) : (
+                <img
+                  className="h-10 md:h-14"
+                  alt="profile icon"
+                  src={userAvatar}
+                />
+              )}
               <p>Basic</p>
+
               <p>Address</p>
             </div>
             <h2>Pet Preferences</h2>
