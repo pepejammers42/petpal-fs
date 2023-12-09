@@ -1,25 +1,33 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from "react-router-dom";
 import AppForm from '../../components/AppForm';
-import { ajax_or_login } from '../../ajax';
+import { ajax, ajax_or_login } from '../../ajax';
 
 function PetAdoption(){
     const navigate = useNavigate();
     const { petId } = useParams();
     const [ error, setError ] = useState("");
     const [ pet, setPet] = useState({
-        name: "pet name", 
-        breed: "breed", 
-        age: 0, 
-        shelter: {
-         shelter_name: "shelter",
-         address: "address"
-        }
-    })
+        "id": 0,
+        "shelter": 0,
+        "name": "",
+        "description": "",
+        "status": "",
+        "breed": "",
+        "age": 0,
+        "size": "",
+        "color": "",
+        "gender": "",
+        "avatar": "",
+        "medical_history": "",
+        "behavior": "",
+        "special_needs": ""
+        })
     
 
     useEffect(() => {
         ajax_or_login(`/pet_listings/${petId}/`, {method:"GET"}, navigate)
+        
         .then(response => {
             if (response.ok) {
                 return response.json();

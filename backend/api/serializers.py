@@ -7,11 +7,12 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
         user = self.user
+        data["userID"] = user.id
         try:
             if hasattr(user, "shelter"):
-                data["user"] = "Shelter"
+                data["user"] = "shelter"
             elif hasattr(user, "seeker"):
-                data["user"] = "Seeker"
+                data["user"] = "seeker"
         except (Shelter.DoesNotExist, Seeker.DoesNotExist):
             raise ValidationError(
                 {

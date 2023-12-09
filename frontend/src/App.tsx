@@ -12,6 +12,7 @@ import PetCreation from "./pages/PetCreation";
 import ShelterAppList from "./pages/ShelterAppList";
 import Application from "./pages/Application";
 import UserProfile from "./pages/UserProfile";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
               <Route path="/applications/:appId/" element={<Application />} />
               <Route path="/pet_listings/" element={<PetCreation />} />
               <Route path="/profile" element={<UserProfile />} />
+              <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
         </BrowserRouter>

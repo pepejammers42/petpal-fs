@@ -1,35 +1,72 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { ajax_or_login } from "../../ajax";
+import { ajax } from '../../ajax';
+
 
 interface Pet {
+    id: number;
+    shelter: number;
     name: string;
+    description: string;
+    status: string;
     breed: string;
     age: number;
-    shelter: {
-        shelter_name: string;
-        address: string;
-    }
+    size: string;
+    color: string;
+    gender: string;
+    avatar: string;
+    medical_history: string;
+    behavior: string;
+    special_needs: string;
 }
 
 function AppForm({pet, petId}: {pet: Pet, petId:number}) {
     const navigate = useNavigate();
     const [error, setError] = useState("");
     const [ app , setApp ] = useState({
-        pet_listing: { name: pet.name, 
-                       breed: pet.breed, 
-                       age: pet.age, 
-                       shelter: {
-                        shelter_name: pet.shelter.shelter_name,
-                        address: pet.shelter.address,
-                       }
+        pet_listing: { "id": 0,
+        "shelter": 0,
+        "name": "",
+        "description": "",
+        "status": "",
+        "breed": "",
+        "age": 0,
+        "size": "",
+        "color": "",
+        "gender": "",
+        "avatar": "",
+        "medical_history": "",
+        "behavior": "",
+        "special_needs": ""
                     },
         creation_time: "",
         personal_statement: "",
     });
 
+    useEffect(()=> {
+        ajax(`/pet_listings/${petId}/`, { method: 'GET' })
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw Error(response.statusText);
+          }
+        })
+        .then((json: Pet) => {
+          setApp(prevState => ({
+            ...prevState,
+            pet_listting:json
+          }));
+        })
+        .catch(error => console.error('Error fetching application details:', error));
+    }, [petId]);
+
     function handle_submit(event: React.ChangeEvent<HTMLFormElement>){
+        event.preventDefault();
+        
         let data = new FormData(event.target);
+        data.append("pet_listing", JSON.stringify(app.pet_listing));
 
         ajax_or_login(`/applications/pets/${petId}/`, {
             method: "POST",
@@ -48,7 +85,6 @@ function AppForm({pet, petId}: {pet: Pet, petId:number}) {
             setError(error.toString());
         });
 
-        event.preventDefault();
     }
 
     return <>
@@ -67,30 +103,25 @@ function AppForm({pet, petId}: {pet: Pet, petId:number}) {
                         data-icon="akar-icons:circle-chevron-right-fill"></span>
                 </h1>
             </Link>
-            <Link
-                to="/src/pages/notification.html"
-                className="text-gray-700 text-base flex flex-col items-end">
-                <div>
-                <span
-                    className="iconify"
-                    data-icon="akar-icons:chat-dots"></span>
-                Chat with
-                <span className="user-name">{" "+app.pet_listing.shelter.shelter_name}</span>
-                </div>
-            </Link>
             </div>
             <div className="container p-4"> 
-            <form>
+            <form onSubmit={handle_submit}>
                 <div className="row">
                     <div className="mb-3 flex flex-col">
                         <label className="form-label"
                             >Personal Statement</label>
                         <textarea
-                            name=""
+                            name="personal_statement"
                             className="border"
                             id="ps"
                             rows={8}
-                            placeholder="Tell the shelter why you are interested in this pet and what you can provide to it!"></textarea>
+                            value={app.personal_statement}
+                            onChange={(e)=>
+                                setApp({...app, personal_statement:e.target.value})
+                            }
+                            placeholder="Tell the shelter why you are interested in this pet and what you can provide to it!">
+
+                        </textarea>
                     </div>
                 </div>
                 <div className="form-check m-auto">
