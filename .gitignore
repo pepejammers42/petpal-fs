@@ -43,3 +43,4 @@ __pycache__/
 
 # venv
 venv/
+frontend/package-lock.json

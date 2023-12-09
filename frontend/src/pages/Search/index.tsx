@@ -21,6 +21,12 @@ function to_url_params(object: { [x: string]: any; size?: string | never[]; gend
   return result.join('&');
 }
 
+type PetType = {
+  id: number,
+  status: string,
+  gender: string,
+};
+
 const Search: React.FC = () => {
   const [ searchParams, setSearchParams ] = useSearchParams();
   const [searchInput, setSearchInput] = useState<string>('');
@@ -30,7 +36,7 @@ const Search: React.FC = () => {
   const gender = ["Male","Female"];
   const status = ["Available", "Pending", "Adopted"];
   const shelter = ["Shelter 1", "Shelter 2", "Shelter 3"];
-  const [ pets, setPets ] = useState([]);
+  const [ pets, setPets ] = useState<PetType>();
 
     const query = useMemo(() => ({
         size : searchParams.get("size") ?? [],
@@ -79,8 +85,8 @@ const Search: React.FC = () => {
             {/* Each FilterDropdown now calls handleFilterChange with a specific category */}
             {/* {/* <FilterDropdown title="Breed" options={BREED} onFilterChange={(filters) => handleFilterChange('breed', filters)} dropdownId="breed-dd" enableSearch={false} /> */}
     
-            {/* <FilterDropdown title="Status" options={status} dropdownId="status-dd" enableSearch={false} onFilterChange={(filters) => handleFilterChange('status', filters)} /> 
-            <FilterDropdown title="Gender" options={gender} onFilterChange={(filters) => handleFilterChange('gender', filters)} dropdownId="gender-dd" enableSearch={false} /> */}
+            <FilterDropdown title="Status" options={status} dropdownId="status-dd" enableSearch={false} onFilterChange={(filters) => handleFilterChange('status', filters)} /> 
+            <FilterDropdown title="Gender" options={gender} onFilterChange={(filters) => handleFilterChange('gender', filters)} dropdownId="gender-dd" enableSearch={false} />
           </div>
           <div className="w-3/4 p-4">
             {/* Search and sort section */}
@@ -96,9 +102,9 @@ const Search: React.FC = () => {
               {/* ... */}
             </div>
             {/* Render the PetDatabase component, passing in the searchInput and selectedFilters */}
-           {pets}
+            {pets?.status} {pets?.gender}
+            </div>
           </div>
-        </div>
       </main>
       <footer></footer>
     </div>
