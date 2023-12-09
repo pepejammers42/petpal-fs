@@ -31,8 +31,8 @@ interface FilterDropdownProps {
   };
 
   const handleOptionClick = (option: string) => {
-    setSelectedFilter(option);
-  };
+    setSelectedFilter((currentFilter) => currentFilter === option ? "" : option);
+  };  
 
   useEffect(() => {
     onFilterChange(selectedFilter);
