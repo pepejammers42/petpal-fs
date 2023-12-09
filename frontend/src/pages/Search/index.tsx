@@ -5,17 +5,17 @@ import { useSearchParams } from "react-router-dom";
 import axios from "../../api/axios";
 
 
-function to_url_params(object: { [x: string]: any; size?: string; gender?: string; status?: string; shelter?: string | number; }) {
+function to_url_params(object: { [x: string]: any; size?: string | never[]; gender?: string | never[]; status?: string; shelter?: string | never[]; }) {
   var result = [];
   for (const key in object) {
       if (Array.isArray(object[key])) {
           for (const value of object[key]) {
-              result.push(`${key}[]=${value}`);
+              result.push(`${key}[]=${value.toLowerCase()}`);
           }
       }
       else {
           let value = object[key];
-          result.push(`${key}=${value}`);
+          result.push(`${key}=${value.toLowerCase()}`);
       }
   }
   return result.join('&');
@@ -24,6 +24,8 @@ function to_url_params(object: { [x: string]: any; size?: string; gender?: strin
 const Search: React.FC = () => {
   const [ searchParams, setSearchParams ] = useSearchParams();
   const [searchInput, setSearchInput] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const size = ["Small", "Medium", "Large"];
   const gender = ["Male","Female"];
   const status = ["Available", "Pending", "Adopted"];
@@ -39,12 +41,27 @@ const Search: React.FC = () => {
     
      useEffect(() => {
       const fetchPets = async() => {
+        try{
         const params = to_url_params(query);
-        const response = await axios.get(`/pet_listings?${params}`);
+        const response = await axios.get(`/pet_listings/?${params}`);
         setPets(response.data);
+        }catch(err){
+          setError("Failed to fetch pets.");
+          console.error(err);
+        }finally {
+          setIsLoading(false);
+        }
       };
       fetchPets();
     }, [ query ]);
+
+    if (isLoading) {
+      return <div>Loading...</div>;
+    }
+  
+    if (error) {
+      return <div>Error: {error}</div>;
+    }
 
   // Callback function to handle filter changes
   // This will need to be updated to handle individual filters for each category
@@ -62,7 +79,7 @@ const Search: React.FC = () => {
             {/* Each FilterDropdown now calls handleFilterChange with a specific category */}
             {/* {/* <FilterDropdown title="Breed" options={BREED} onFilterChange={(filters) => handleFilterChange('breed', filters)} dropdownId="breed-dd" enableSearch={false} /> */}
     
-            {/* <FilterDropdown title="Status" options={status} dropdownId="status-dd" enableSearch={false} onFilterChange={(filters) => handleFilterChange('status', filters)} />
+            {/* <FilterDropdown title="Status" options={status} dropdownId="status-dd" enableSearch={false} onFilterChange={(filters) => handleFilterChange('status', filters)} /> 
             <FilterDropdown title="Gender" options={gender} onFilterChange={(filters) => handleFilterChange('gender', filters)} dropdownId="gender-dd" enableSearch={false} /> */}
           </div>
           <div className="w-3/4 p-4">
@@ -79,7 +96,7 @@ const Search: React.FC = () => {
               {/* ... */}
             </div>
             {/* Render the PetDatabase component, passing in the searchInput and selectedFilters */}
-            <pre>{JSON.stringify(pets, null, 2)}</pre>
+           {pets}
           </div>
         </div>
       </main>
