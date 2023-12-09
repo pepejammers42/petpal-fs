@@ -11,6 +11,7 @@ import PetAdoption from "./pages/PetAdoption";
 import PetCreation from "./pages/PetCreation";
 import ShelterAppList from "./pages/ShelterAppList";
 import Application from "./pages/Application";
+import UserProfile from "./pages/UserProfile";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
               <Route path="/applications/" element={<ShelterAppList />} />
               <Route path="/applications/:appId/" element={<Application />} />
               <Route path="/pet_listings/" element={<PetCreation />} />
+              <Route path="/profile" element={<UserProfile />} />
             </Route>
           </Routes>
         </BrowserRouter>
