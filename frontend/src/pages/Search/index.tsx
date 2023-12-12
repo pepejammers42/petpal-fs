@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import FilterDropdown from 'components/FilterDropdown';
-import PetDatabase from 'components/PetDatabase';
 import { useSearchParams } from "react-router-dom";
 import axios from "../../api/axios";
-import "react-widgets/styles.css";
-import DropdownList from "react-widgets/DropdownList";
+import { DropDown, DropdownProvider } from 'components/DropDown';
 
 function to_url_params(object: { [x: string]: any; size?: string | never[]; gender?: string | never[]; status?: string; shelter?: string | never[]; }) {
   var result = [];
@@ -55,6 +52,7 @@ type PetType = {
   size: string,
   status: string,
   gender: string,
+  avatar: string | null, // URL or path to the image
 };
 
 const Search: React.FC = () => {
@@ -67,14 +65,15 @@ const Search: React.FC = () => {
   const status = ["Available", "Pending", "Adopted"];
   const shelter = ["Shelter 1", "Shelter 2", "Shelter 3"];
   const [pets, setPets] = useState<PetType[]>();
-  const dropdownRef = useRef(null);
+  // const dropdownRef = useRef(null);
 
 
-  const query = useMemo(() => create_url_params(searchParams), [searchParams]);
+  const query = useMemo(
+    () => create_url_params(searchParams),
+    [searchParams]);
 
 
   const fetchPets = async () => {
-    // Toggle isLoading to true
     setIsLoading(true);
 
     try {
@@ -104,7 +103,6 @@ const Search: React.FC = () => {
   }
 
   // Callback function to handle filter changes
-  // This will need to be updated to handle individual filters for each category
   const handleFilterChange = (filterCategory: string, value: string) => {
     setSearchParams((prevParams) => {
       prevParams.set(filterCategory, value);
@@ -114,63 +112,87 @@ const Search: React.FC = () => {
 
 
   return (
-    <div className="page-scroll-container">
+    <div className="page-scroll-container" >
       <header></header>
       <main>
         <div className="flex">
+        <DropdownProvider>
           <div className="w-1/4 p-5">
-            {/* Each FilterDropdown now calls handleFilterChange with a specific category */}
-            {/* {/* <FilterDropdown title="Breed" options={BREED} onFilterChange={(filters) => handleFilterChange('breed', filters)} dropdownId="breed-dd" enableSearch={false} /> */}
-
-            {/* <FilterDropdown title="Status" options={status} dropdownId="status-dd" enableSearch={false} onFilterChange={(filters) => handleFilterChange('status', filters)} />
-            <FilterDropdown title="Gender" options={gender} onFilterChange={(filters) => handleFilterChange('gender', filters)} dropdownId="gender-dd" enableSearch={false} /> */}
-
-
-            Gender:
-            <DropdownList
-              data={gender}
-              ref={dropdownRef}
-              value={searchParams.get("gender") ?? "All"}
-              onChange={value => handleFilterChange('gender', value)}
-            />
-
-
-            Size:
-            <DropdownList
+        
+            {/* Filter section */}
+            
+            <div className="mb-4">
+            <DropDown
               data={size}
-              ref={dropdownRef}
+              category="size"
+              enableSearch={true}
               value={searchParams.get("size") ?? "All"}
-              onChange={value => handleFilterChange('size', value)}
+              onChange={(value) => handleFilterChange("size", value)}
             />
+            </div>
+            <div className="mb-4">
+            <DropDown
+              data={status}
+              category="status"
+              enableSearch={true}
+              value={searchParams.get("status") ?? "All"}
+              onChange={(value) => handleFilterChange("status", value)}
+            />
+            </div>
+            <div className="mb-4">
+            <DropDown
+              data={gender}
+              category="gender"
+              enableSearch={true}
+              value={searchParams.get("gender") ?? "All"}
+              onChange={(value) => handleFilterChange("gender", value)}
+            />
+            </div>
           </div>
+          </DropdownProvider>
           <div className="w-3/4 p-4">
             {/* Search and sort section */}
             <div>
-              <input
-                type="text"
-                placeholder="Search..."
-                className="input-search"
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-              />
+              
+              <form>   
+                  <label id="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                  <div className="relative">
+                      <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                          <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                          </svg>
+                      </div>
+                      <input
+                        type="search"
+                        id="search"
+                        className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Search by pet descriptions..."
+                        required
+                        // value={searchTerm}
+                        // onChange={(e) => setSearchTerm(e.target.value)}
+                      />
+                  </div>
+              </form>
+
               {/* Sort container */}
               {/* ... */}
             </div>
-            {/* Render the PetDatabase component, passing in the searchInput and selectedFilters */}
-            {/* {pets?.status} {pets?.gender} */}
-            {/* {pets} */}
-            {pets?.map(pet => (
-              <div className="max-w-sm rounded overflow-hidden shadow-lg">
-                <div className="px-6 py-4">
-                  <div className="font-bold text-xl mb-2">{pet.name}</div>
-                  <p className="text-gray-700 text-base">
-                    {pet.size} <br/>
-                    {pet.gender}
-                  </p>
+            <div className="flex flex-wrap -mx-4 mb-4">
+              <div className="md:w-1/4">
+              {pets?.map(pet => (
+                <div className="max-w-sm rounded overflow-hidden shadow-lg">
+                  <div className="px-6 py-4">
+                    {pet.avatar && <img src={"pet.avatar"}/>}
+                    <div className="font-bold text-xl mb-2">{pet.name}</div>
+                    <p className="text-gray-700 text-base">
+                      {pet.size} <br/>
+                      {pet.gender}
+                    </p>
+                  </div>
                 </div>
+              ))}
               </div>
-            ))}
-
+            </div>
           </div>
         </div>
       </main>
