@@ -6,6 +6,7 @@ interface Pet {
     name: string;
     description: string;
     avatar: string; 
+    age: number;
   }
 
 const PetCard: React.FC<{ pet: Pet }> = ({ pet }) => {

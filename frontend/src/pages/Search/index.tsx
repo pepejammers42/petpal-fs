@@ -2,6 +2,9 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useSearchParams } from "react-router-dom";
 import axios from "../../api/axios";
 import { DropDown, DropdownProvider } from 'components/DropDown';
+import { Icon } from '@iconify/react';
+import carbonSortAscending from '@iconify/icons-carbon/sort-ascending';
+import carbonSortDescending from '@iconify/icons-carbon/sort-descending';
 
 function to_url_params(object: { [x: string]: any; size?: string | never[]; gender?: string | never[]; status?: string; shelter?: string | never[]; }) {
   var result = [];
@@ -53,10 +56,13 @@ type PetType = {
   status: string,
   gender: string,
   avatar: string | null, // URL or path to the image
+  age: number,
 };
 
 const Search: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [sortField, setSortField] = useState<string>('');
+  const [sortOrder, setSortOrder] = useState('asc');
   const [searchInput, setSearchInput] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -78,7 +84,11 @@ const Search: React.FC = () => {
 
     try {
       const params = to_url_params(query);
-      const response = await axios.get(`/pet_listings/?${params}`);
+      let sortParam = '';
+      if (sortField && sortField !== 'none') {
+        sortParam = `${sortOrder === 'asc' ? '' : '-'}${sortField}`;
+      }
+      const response = await axios.get(`/pet_listings/?${params}${sortParam ? `&sort_by=${sortParam}` : ''}`);
       console.log(response)
 
       setPets(response.data.results)
@@ -92,7 +102,7 @@ const Search: React.FC = () => {
 
   useEffect(() => {
     fetchPets();
-  }, [query]);
+  }, [query, sortField, sortOrder]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -102,7 +112,16 @@ const Search: React.FC = () => {
     return <div>Error: {error}</div>;
   }
 
-  // Callback function to handle filter changes
+  const toggleSortOrder = () => {
+    setSortOrder(prevOrder => prevOrder === 'asc' ? 'desc' : 'asc');
+  };
+  const handleSortSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedField = event.target.value;
+    setSortField(selectedField);
+    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    fetchPets(); // Refetch pets with new sort order
+  };
+
   const handleFilterChange = (filterCategory: string, value: string) => {
     setSearchParams((prevParams) => {
       prevParams.set(filterCategory, value);
@@ -152,13 +171,13 @@ const Search: React.FC = () => {
           </DropdownProvider>
           <div className="w-3/4 p-4">
             {/* Search and sort section */}
-            <div>
+            <div className="flex justify-between items-center">
               
-              <form>   
-                  <label id="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+              <form className="flex-grow pr-2">   
+                  <label id="search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
                   <div className="relative">
                       <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                          <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                          <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                           </svg>
                       </div>
@@ -166,7 +185,7 @@ const Search: React.FC = () => {
                         type="search"
                         id="search"
                         className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Search by pet descriptions..."
+                        placeholder="What kind of pet you are looking for? Try 'cat' or 'dog'"
                         required
                         // value={searchTerm}
                         // onChange={(e) => setSearchTerm(e.target.value)}
@@ -174,8 +193,21 @@ const Search: React.FC = () => {
                   </div>
               </form>
 
-              {/* Sort container */}
-              {/* ... */}
+               {/* Sort container */}
+              
+               <div className="flex justify-end text-fg-primary items-center space-x-2 px-4">
+                <select onChange={(e) => setSortField(e.target.value)} value={sortField}>
+                  <option value="none">No Sort</option>
+                  <option value="name">Name</option>
+                  <option value="age">Age</option>
+                </select>
+                {sortField && sortField !== 'none' && (
+                  <button onClick={toggleSortOrder}>
+                    {/* {sortOrder === 'asc' ? 'Desc' : 'Asc'} */}
+                    <Icon icon={sortOrder === 'asc' ? carbonSortAscending : carbonSortDescending} />
+                  </button>
+                )}
+              </div>
             </div>
             <div className="flex flex-wrap -mx-4 mb-4">
               <div className="md:w-1/4">
@@ -185,7 +217,7 @@ const Search: React.FC = () => {
                     {pet.avatar && <img src={"pet.avatar"}/>}
                     <div className="font-bold text-xl mb-2">{pet.name}</div>
                     <p className="text-gray-700 text-base">
-                      {pet.size} <br/>
+                      {pet.age} <br/>
                       {pet.gender}
                     </p>
                   </div>
