@@ -4,8 +4,34 @@ import {Link} from "react-router-dom";
 
 interface App {
     id: number;
-    pet_listing: number;
-    applicant: number;
+    pet_listing: 
+      {
+        "id": number,
+        "shelter": number,
+        "name": string,
+        "description": string,
+        "status": string,
+        "breed": string,
+        "age": number,
+        "size": string,
+        "color": string,
+        "gender": string,
+        "avatar": string,
+        "medical_history": string,
+        "behavior": string,
+        "special_needs": string
+    };
+    applicant: {
+      "id": number,
+      "email": string,
+      "password": string,
+      "first_name": string,
+      "last_name": string,
+      "avatar": string,
+      "phone_number": string,
+      "location": string,
+      "preference": string
+    };
     status: string;
     creation_time: string;
     last_update_time: string;
@@ -17,30 +43,11 @@ const AppListItem = ({app}:{app:App}) => {
     const [pet, setPet] = useState({name: ""});
     const [seeker, setSeeker] = useState({});
 
-    useEffect(()=>{
-        ajax(`/pet_listings/${app.pet_listing}`, {method:"GET"})
-        .then(response => {
-            if(response.ok){
-                return response.json();
-            }
-            else{
-                throw Error(response.statusText);
-            }
-        })
-        .then(json => {
-            setPet(json);
-        })
-        .catch(error => {
-            setError(error.toString());
-        })
-    }, [])
-
-
     return (
         <div key={app.id} className="app-list-item bg-gray-200 p-4 mb-4 rounded">
             <h3 className="text-lg font-bold mb-2">{`Application #${app.id}`}</h3>
             <p>Status: {app.status}</p>
-            <p>Applicant: {app.applicant}</p>
+            <p>Applicant: {app.applicant.first_name +" " + app.applicant.last_name}</p>
             <Link to={`/pet_listings/${app.pet_listing}`}><p>Pet: {pet.name}</p></Link>
             <p>Creation Time: {app.creation_time}</p>
             <p>Last Update Time: {app.last_update_time}</p>

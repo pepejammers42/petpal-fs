@@ -160,6 +160,7 @@ const AppDetail: React.FC<AppDetailProps> = ({ appId, onUpdateStatus }) => {
           
           <p>Status: {app.status}</p>
           <Link to={`/pet_listings/${app.pet_listing.id}`}><p>Pet: {app.pet_listing.name}</p></Link>
+          <p>Applicant: {app.applicant.first_name + " " + app.applicant.last_name}</p>
           <p>Creation Time: {app.creation_time}</p>
           <p>Last Update Time: {app.last_update_time}</p>
           <p>Personal Statement: {app.personal_statement}</p>

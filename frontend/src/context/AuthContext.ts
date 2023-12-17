@@ -1,8 +1,13 @@
 import { createContext } from "react";
 
 export type AuthUser = {
+  email: string;
   avatar: string;
   phone_number: string;
+  notificationPreferences: {
+    email: boolean;
+    sms: boolean;
+  }
 };
 
 export type SeekerUser = AuthUser & {
@@ -25,6 +30,10 @@ type AuthContextType = {
   user: UserInfo | null;
   login: (credentials: LoginCredentialsType) => Promise<void>;
   logout: () => void;
+  updateUserProfile: (profileData: any) => Promise<void>;
+  updateUserPassword: (passwordData: any) => Promise<void>;
+  updateNotificationPreferences: (notificationData: any) => void;
+
 };
 
 type LoginCredentialsType = {

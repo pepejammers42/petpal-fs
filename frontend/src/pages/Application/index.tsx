@@ -7,9 +7,11 @@ function Application(){
     const parsedAppId = parseInt(appId ?? "", 10);
     return (
         <>
+            <div className="w-full max-w-md mx-auto pt-8 pb-8">
             <h1 className="text-3xl font-bold mb-4">Application #{appId} Details</h1>
             <AppDetail onUpdateStatus={()=>{}} appId={parsedAppId}/>
             <AppReply />
+            </div>
         </>
     )
 }
