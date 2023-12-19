@@ -9,6 +9,7 @@ import SignupShelter from "./pages/SignupShelter";
 import AuthProvider from "./context/AuthProvider";
 import PetAdoption from "./pages/PetAdoption";
 import PetCreation from "./pages/PetCreation";
+import UserProfile from "./pages/UserProfile";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
               <Route path="/signup-seeker" element={<SignupSeeker />} />
               <Route path="/applications/pets/:petId/" element={<PetAdoption />} />
               <Route path="/pet_listings/" element={<PetCreation />} />
+              <Route path="/profile" element={<UserProfile />} />
             </Route>
           </Routes>
         </BrowserRouter>

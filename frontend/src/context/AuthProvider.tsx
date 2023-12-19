@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "../api/axios";
-import AuthContext from "./AuthContext";
+import AuthContext, { UserInfo, SeekerUser, ShelterUser } from "./AuthContext";
 
 type LoginCredentialsType = {
   email: string;
@@ -15,25 +15,75 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [token, setToken] = useState<string | null>(
     localStorage.getItem("token"),
   );
-  const [user, setUser] = useState<string | null>(null);
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      fetchUserInfo();
     } else {
       delete axios.defaults.headers.common["Authorization"];
     }
   }, [token]);
 
+  const fetchUserInfo = async () => {
+    try {
+      let userType = localStorage.getItem("user");
+      const userID = localStorage.getItem("userID");
+
+      if (!userType || !userID) {
+        // Handle the case where userType or userID is not available
+        return;
+      }
+
+      const response = await axios.get(`/accounts/${userType}/${userID}/`);
+
+      if (userType === "seeker") {
+        const {
+          avatar,
+          phone_number,
+          first_name,
+          last_name,
+          location,
+          preference,
+        } = response.data;
+        const seekerUserInfo: SeekerUser = {
+          avatar,
+          phone_number,
+          first_name,
+          last_name,
+          location,
+          preference,
+        };
+        setUserInfo(seekerUserInfo);
+      } else if (userType === "shelter") {
+        const { avatar, phone_number, shelter_name, address, description } =
+          response.data;
+        const shelterUserInfo: ShelterUser = {
+          avatar,
+          phone_number,
+          shelter_name,
+          address,
+          description,
+        };
+        setUserInfo(shelterUserInfo);
+      }
+    } catch (error) {
+      console.error("Error fetching user details", error);
+      // Handle error
+    }
+  };
+
   const login = async (credentials: LoginCredentialsType) => {
     try {
       const response = await axios.post("/api/token/", credentials);
-      const { access, user } = response.data;
+      const { access, userID, user } = response.data;
       localStorage.setItem("token", access);
-      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("userID", userID);
+      localStorage.setItem("user", user);
       setToken(access);
-      setUser(user);
     } catch (error) {
+      console.error("Login error", error);
       // Handle error
     }
   };
@@ -41,11 +91,13 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("userID");
     setToken(null);
-    setUser(null);
+    setUserInfo(null);
   };
+
   return (
-    <AuthContext.Provider value={{ token, user, login, logout }}>
+    <AuthContext.Provider value={{ token, user: userInfo, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
