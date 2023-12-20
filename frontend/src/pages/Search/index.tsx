@@ -5,29 +5,32 @@ import { DropDown, DropdownProvider } from 'components/DropDown';
 import { Icon } from '@iconify/react';
 import carbonSortAscending from '@iconify/icons-carbon/sort-ascending';
 import carbonSortDescending from '@iconify/icons-carbon/sort-descending';
+import SearchPagination from "../../components/SearchPagination";
 
 function to_url_params(object: { [x: string]: any; size?: string | never[]; gender?: string | never[]; status?: string; shelter?: string | never[]; }) {
   var result = [];
   for (const key in object) {
     if (Array.isArray(object[key])) {
       for (const value of object[key]) {
-        result.push(`${key}[]=${value.toLowerCase()}`);
+        result.push(`${key}[]=${value.toString().toLowerCase()}`);
       }
     }
     else {
       let value = object[key];
-      result.push(`${key}=${value.toLowerCase()}`);
+      result.push(`${key}=${value.toString().toLowerCase()}`);
     }
   }
   return result.join('&');
 }
 
 function create_url_params(searchParams: any) {
+
   var temp = {
     size: searchParams.get("size") ?? [],
     gender: searchParams.get("gender") ?? [],
     status: searchParams.get("status") ?? "available",
     shelter: searchParams.get("shelter") ?? [],
+    page: searchParams.get("page") ?? 1
   }
 
   if (temp['size'] == "All") {
@@ -64,8 +67,8 @@ const Search: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [sortField, setSortField] = useState<string>('');
   const [sortOrder, setSortOrder] = useState('asc');
-  const [searchInput, setSearchInput] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
+  const [maxCount, setMaxCount] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const size = ["All", "Small", "Medium", "Large"];
   const gender = ["All", "Male", "Female"];
@@ -93,6 +96,7 @@ const Search: React.FC = () => {
       console.log(response)
 
       setPets(response.data.results)
+      setMaxCount(response.data.count)
     } catch (err) {
       setError("Failed to fetch pets.");
       console.error(err);
@@ -128,6 +132,14 @@ const Search: React.FC = () => {
       prevParams.set(filterCategory, value);
       return prevParams;
     });
+
+    // If the filterCategory isn't page, set page back to 1
+    if (filterCategory !== "page") {
+      setSearchParams((prevParams) => {
+        prevParams.set("page", "1");
+        return prevParams;
+      });
+    }
   };
 
 
@@ -179,7 +191,7 @@ const Search: React.FC = () => {
                 <div className="relative">
                   <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                     <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                     </svg>
                   </div>
                   <input
@@ -198,9 +210,9 @@ const Search: React.FC = () => {
 
               <div className="flex justify-end text-fg-primary items-center space-x-2 px-4">
                 <select onChange={(e) => setSortField(e.target.value)} value={sortField}>
-                  <option value="none">No Sort</option>
-                  <option value="name">Name</option>
-                  <option value="age">Age</option>
+                  <option key="sort-0" value="none">No Sort</option>
+                  <option key="sort-1" value="name">Name</option>
+                  <option key="sort-2" value="age">Age</option>
                 </select>
                 {sortField && sortField !== 'none' && (
                   <button onClick={toggleSortOrder}>
@@ -225,7 +237,7 @@ const Search: React.FC = () => {
             </div>
 
             {/* Pagination */}
-            <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 mb-16">
+            {/* <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 mb-16">
               <div className="flex flex-1 justify-between sm:hidden">
                 <a href="#" className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Previous</a>
                 <a href="#" className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Next</a>
@@ -238,35 +250,23 @@ const Search: React.FC = () => {
                     to 
                     <span className="font-medium"> 10 </span> 
                     of 
-                    <span className="font-medium"> 97 </span> 
+                    <span className="font-medium"> 21 </span> 
                     results 
                   </p>
                 </div>
                 <div>
                   <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
-                    <a href="#" className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
-                      <span className="sr-only">Previous</span>
-                      <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
-                      </svg>
-                    </a>
-                    <a href="#" aria-current="page" className="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">1</a>
-                    <a href="#" className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">2</a>
-                    <a href="#" className="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex">3</a>
-                    <span className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300 focus:outline-offset-0">...</span>
-                    <a href="#" className="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex">8</a>
-                    <a href="#" className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">9</a>
-                    <a href="#" className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">10</a>
-                    <a href="#" className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
-                      <span className="sr-only">Next</span>
-                      <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
-                      </svg>
-                    </a>
+                    <a href="#" className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">Previous</a>
+                    <a href="#" className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">Next</a>
                   </nav>
                 </div>
               </div>
-            </div>
+            </div> */}
+            <SearchPagination 
+              page={searchParams.get("page") ? Number(searchParams.get("page")) : 1 } 
+              pageSize={searchParams.get("page_size") ? Number(searchParams.get("page_size")) : 10} 
+              maxCount={maxCount}
+              onChange={(value) => handleFilterChange("page", value.toString())} />
 
           </div>
         </div>
