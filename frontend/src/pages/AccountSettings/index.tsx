@@ -1,32 +1,115 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import SettingsNav from "../../components/SettingsNav";
+import axios from "../../api/axios";
+import {SeekerUser, ShelterUser} from "../../context/AuthContext"
+
 
 const AccountSettings = () => {
-  const { updateUserPassword, updateNotificationPreferences } = useAuth();
+  const { user, updateNotificationPreferences } = useAuth();
   const [isEditingPassword, setIsEditingPassword] = useState(false);
   const [isEditingNotifs, setIsEditingNotifs] = useState(false);
+  const [ userError, setUserError] = useState("");
+  const [pwError, setPwError] = useState("");
+  const [ntError, setNtError] = useState("");
+  const [userType, setUserType] = useState("");
   const [passwordData, setPasswordData] = useState({
     password: "",
     confirmPassword: "",
   });
+  const [seekerFormData, setSeekerFormData] = useState({
+    email: user?.email || "",
+    first_name: "",
+    last_name: "",
+    location: "",
+    password: "",
+    confirm_password: ""
+    
+  });
+  const [shelterFormData, setShelterFormData] = useState({
+    email: user?.email || "",
+    shelter_name: "",
+    address: "",
+    password: "",
+    confirm_password: ""
+  })
 
   const [notificationData, setNotificationData] = useState({
     email: "Enabled",
     sms: "Disabled",
   });
 
+  useEffect(()=> {
+    try {
+      let userType = localStorage.getItem("user");
+      
+      const userID = localStorage.getItem("userID");
+
+      if (!userType || !userID) {
+        // Handle the case where userType or userID is not available
+        return;
+      }
+      else{
+        setUserType(userType);
+      }
+
+      if(userType==="seeker"){
+        setSeekerFormData({
+          email: user?.email || "",
+          first_name: (user as SeekerUser)?.first_name || "",
+          last_name: (user as SeekerUser)?.last_name || "",
+          location: (user as SeekerUser)?.location || "",
+          password: "",
+          confirm_password: ""
+      })
+      }
+      else if (userType==="shelter"){
+        setShelterFormData({
+        email: user?.email || "",
+        shelter_name: (user as ShelterUser)?.shelter_name || "",
+        address: (user as ShelterUser)?.address || "",
+        password: "",
+        confirm_password: ""
+      })
+      }
+    } catch (errors) {
+      setUserError("user is not logged in" + errors);
+    }
+  }, [user])
+
+  useEffect(() => { 
+    if (userType==="seeker"){
+      setSeekerFormData({...seekerFormData, password:passwordData.password, confirm_password:passwordData.confirmPassword});
+    }
+    else if (userType==="shelter"){
+      setShelterFormData({...shelterFormData, password:passwordData.password, confirm_password:passwordData.confirmPassword});
+    }
+  }, [passwordData])
+
   const handleTogglePasswordEdit = () => {
     setIsEditingPassword((prev) => !prev);
   };
 
   const handlePasswordSubmit = async () => {
+    
     try {
       // Add password validation logic if needed
-      await updateUserPassword(passwordData);
-      setIsEditingPassword(false);
-    } catch (error) {
-      console.error("Error updating password:", error);
+      const userID = localStorage.getItem("userID");
+
+      if (!userID) {
+        // Handle the case where userType or userID is not available
+        return;
+      }
+
+      const data = (userType==="seeker"? seekerFormData : shelterFormData);
+      const response = await axios.put(`/accounts/${userType}/${userID}/`, data);
+      if(response.status === 200){
+        setIsEditingPassword(false);
+      } else {
+        setPwError("Error updating user password 1: "+ response.statusText);
+      }
+    } catch (errors) {
+      setPwError("Error updating password 2:"+ errors);
     }
   };
 
@@ -43,8 +126,8 @@ const AccountSettings = () => {
     try {
       await updateNotificationPreferences(notificationData);
       setIsEditingNotifs(false);
-    } catch (error) {
-      console.error("Error updating notification preferences:", error);
+    } catch (errors) {
+      setNtError("Error updating notification preferences:"+ errors);
     }
   };
 
@@ -90,6 +173,7 @@ const AccountSettings = () => {
                 Edit Password
               </button>
             )}
+            <p>{pwError}</p>
           </div>
 
           {/* Notification Preferences Section */}
@@ -127,6 +211,7 @@ const AccountSettings = () => {
                 Edit Preferences
               </button>
             )}
+            <p>{ntError}</p>
           </div>
         </div>
       </div>

@@ -50,6 +50,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           preference,
           email,
           notificationPreferences,
+          password
         } = response.data;
         const seekerUserInfo: SeekerUser = {
           avatar,
@@ -60,10 +61,11 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           preference,
           email,
           notificationPreferences,
+          password
         };
         setUserInfo(seekerUserInfo);
       } else if (userType === "shelter") {
-        const { avatar, phone_number, shelter_name, address, description, email, notificationPreferences } =
+        const { avatar, phone_number, shelter_name, address, description, email, notificationPreferences, password } =
           response.data;
         const shelterUserInfo: ShelterUser = {
           avatar,
@@ -73,6 +75,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           description,
           email,
           notificationPreferences,
+          password
         };
         setUserInfo(shelterUserInfo);
       }
@@ -102,27 +105,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     localStorage.removeItem("userID");
     setToken(null);
     setUserInfo(null);
-  };
-
-  const updateUserProfile =async (profileData:any) => {
-    try {
-      let userType = localStorage.getItem("user");
-      const userID = localStorage.getItem("userID");
-
-      if (!userType || !userID) {
-        // Handle the case where userType or userID is not available
-        return;
-      }
-
-      const response = await axios.put(`/accounts/${userType}/${userID}/`, profileData);
-      if (response.status === 200){
-        await fetchUserInfo();
-      } else {
-        console.error("Error updating user profile:", response.statusText);
-      }
-    } catch (error){
-      console.error("Error updating user profile2:", error);
-    }
   };
 
   const updateUserPassword = async (passwordData: any) => {
@@ -161,7 +143,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   return (
-    <AuthContext.Provider value={{ token, user: userInfo, login, logout, updateUserProfile, updateUserPassword, updateNotificationPreferences }}>
+    <AuthContext.Provider value={{ token, user: userInfo, login, logout, updateUserPassword, updateNotificationPreferences }}>
       {children}
     </AuthContext.Provider>
   );

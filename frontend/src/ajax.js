@@ -8,7 +8,7 @@ export async function ajax(url, settings) {
 }
 
 export async function ajax_or_login(url, settings, navigate) {
-    const token = "Bearer " + localStorage.getItem('access');
+    const token = "Bearer " + localStorage.getItem('token');
 
     if ('headers' in settings) {
         settings.headers['Authorization'] = token;

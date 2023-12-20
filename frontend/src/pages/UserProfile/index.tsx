@@ -5,22 +5,34 @@ import React, { useState, useEffect } from "react";
 import {SeekerUser, ShelterUser} from "../../context/AuthContext"
 import SettingsNav from "../../components/SettingsNav";
 import { isButtonElement } from "react-router-dom/dist/dom";
+import axios from "../../api/axios";
 
 const UserProfile = () => {
-  const { user, updateUserProfile } = useAuth();
+  const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+  const [changed, setChanged] = useState(false);
   const [userType, setUserType] = useState("seeker");
-  const [formData, setFormData] = useState({
+  const [seekerFormData, setSeekerFormData] = useState({
     email: user?.email || "",
     phone_number: user?.phone_number || "",
     first_name: "",
     last_name: "",
     location: "",
     preference: "",
+    password: "",
+    confirm_password: ""
+    
+  });
+  const [shelterFormData, setShelterFormData] = useState({
+    email: user?.email || "",
+    phone_number: user?.phone_number || "",
     shelter_name: "",
     address: "",
     description: "",
-  });
+    password: "",
+    confirm_password: ""
+  })
+  
 
   useEffect(() => {
     let userType = localStorage.getItem("user");
@@ -35,7 +47,7 @@ const UserProfile = () => {
     setUserType(userType);
  
     if (userType === "seeker"){
-      setFormData((prevFormData) => ({
+      setSeekerFormData((prevFormData) => ({
         ...prevFormData,
         email: user?.email || "",
         phone_number: user?.phone_number || "",
@@ -47,7 +59,7 @@ const UserProfile = () => {
     }
 
     else if (userType === "shelter"){
-      setFormData((prevFormData) => ({
+      setShelterFormData((prevFormData) => ({
         ...prevFormData,
         email: user?.email || "",
         phone_number: user?.phone_number || "",
@@ -57,16 +69,40 @@ const UserProfile = () => {
       }));
     }
 
-  }, [user, updateUserProfile]);
+  }, [user]);
+
+  useEffect(() => {
+    (userType==="seeker"?renderSeekerSection():renderShelterSection());
+  }, [changed])
 
   const handleEditClick = () => {
     setIsEditing(true);
   };
 
   const handleSubmit = async () => {
-    await updateUserProfile(formData);
-    setIsEditing(false);
-  }
+      try {
+        let userType = localStorage.getItem("user");
+        const userID = localStorage.getItem("userID");
+  
+        if (!userType || !userID) {
+          // Handle the case where userType or userID is not available
+
+          return;
+        }
+  
+        const response = await axios.put(`/accounts/${userType}/${userID}/`, (userType==="seeker"? seekerFormData : shelterFormData));
+        if (response.status === 200){
+          setIsEditing(false);
+          setChanged(true);
+        } else {
+          console.error("Error updating user profile:", response.statusText);
+        }
+      } catch (error){
+        console.error("Error updating user profile2:", error);
+      }
+    };
+    
+
 
   const renderSeekerSection = () => {
     return (<>
@@ -82,8 +118,8 @@ const UserProfile = () => {
           id="seeker1"
           type="text"
           placeholder="First Name"
-          value={formData.first_name}
-          onChange={(e) => setFormData({...formData, first_name: e.target.value})}
+          value={seekerFormData.first_name}
+          onChange={(e) => setSeekerFormData({...seekerFormData, first_name: e.target.value})}
           disabled={!isEditing}
         />
         <br/>
@@ -92,8 +128,8 @@ const UserProfile = () => {
           id="seeker2"
           type="text"
           placeholder="Last Name"
-          value={formData.last_name}
-          onChange={(e) => setFormData({...formData, last_name: e.target.value})}
+          value={seekerFormData.last_name}
+          onChange={(e) => setSeekerFormData({...seekerFormData, last_name: e.target.value})}
           disabled={!isEditing}
         />
         <br/>
@@ -102,8 +138,8 @@ const UserProfile = () => {
           id="seeker3"
           type="email"
           placeholder="Email"
-          value={formData.email}
-          onChange={(e) => setFormData({...formData, email: e.target.value})}
+          value={seekerFormData.email}
+          onChange={(e) => setSeekerFormData({...seekerFormData, email: e.target.value})}
           disabled={!isEditing}
         />
         <br/>
@@ -112,8 +148,8 @@ const UserProfile = () => {
             id="seeker4"
             type="text"
             placeholder="Phone Number"
-            value={formData.phone_number}
-            onChange={(e) => setFormData({...formData, phone_number: e.target.value})}
+            value={seekerFormData.phone_number}
+            onChange={(e) => setSeekerFormData({...seekerFormData, phone_number: e.target.value})}
             disabled={!isEditing}
         />
         <br/>
@@ -122,8 +158,8 @@ const UserProfile = () => {
           id="seeker5"
           type="text"
           placeholder="Location"
-          value={formData.location}
-          onChange={(e) => setFormData({...formData, location: e.target.value})}
+          value={seekerFormData.location}
+          onChange={(e) => setSeekerFormData({...seekerFormData, location: e.target.value})}
           disabled={!isEditing}
         />
         <br/>
@@ -131,10 +167,17 @@ const UserProfile = () => {
         <h2>Pet Preferences</h2>
           <textarea
             placeholder="Pet Preferences"
-            value={formData.preference}
-            onChange={(e) => setFormData({...formData, preference: e.target.value})}
+            value={seekerFormData.preference}
+            onChange={(e) => setSeekerFormData({...seekerFormData, preference: e.target.value})}
             disabled={!isEditing}
           />
+        <br/>
+        {isEditing ? 
+          <label>Type your password: 
+          <input onChange={(e)=>setSeekerFormData({...seekerFormData, password:e.target.value, confirm_password:e.target.value})} required/>
+          </label>
+          :
+          ''}
       </form>
       {isEditing ? (
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick = {handleSubmit}>Change Profile</button>
@@ -157,8 +200,8 @@ const UserProfile = () => {
             id="shelter1"
             type="text"
             placeholder="Shelter Name"
-            value={formData.shelter_name}
-            onChange={(e) => setFormData({...formData, shelter_name: e.target.value})}
+            value={shelterFormData.shelter_name}
+            onChange={(e) => setShelterFormData({...shelterFormData, shelter_name: e.target.value})}
             disabled={!isEditing}
           />
           <br/>
@@ -167,8 +210,8 @@ const UserProfile = () => {
           id="shelter2"
           type="email"
           placeholder="Email"
-          value={formData.email}
-          onChange={(e) => setFormData({...formData, email: e.target.value})}
+          value={shelterFormData.email}
+          onChange={(e) => setShelterFormData({...shelterFormData, email: e.target.value})}
           disabled={!isEditing}
           />
           <br/>
@@ -177,8 +220,8 @@ const UserProfile = () => {
             id="shelter3"
             type="text"
             placeholder="Phone Number"
-            value={formData.phone_number}
-            onChange={(e) => setFormData({...formData, phone_number: e.target.value})}
+            value={shelterFormData.phone_number}
+            onChange={(e) => setShelterFormData({...shelterFormData, phone_number: e.target.value})}
             disabled={!isEditing}
           />
           <br/>
@@ -187,8 +230,8 @@ const UserProfile = () => {
             id="shelter4"
             type="text"
             placeholder="Address"
-            value={formData.address}
-            onChange={(e) => setFormData({...formData, address: e.target.value})}
+            value={shelterFormData.address}
+            onChange={(e) => setShelterFormData({...shelterFormData, address: e.target.value})}
             disabled={!isEditing}
           />
           <br/>
@@ -196,10 +239,17 @@ const UserProfile = () => {
           <h2>Shelter Description</h2>
           <textarea
             placeholder="Shelter Description"
-            value={formData.description}
-            onChange={(e) => setFormData({...formData, description: e.target.value})}
+            value={shelterFormData.description}
+            onChange={(e) => setShelterFormData({...shelterFormData, description: e.target.value})}
             disabled={!isEditing}
           />
+          <br/>
+          {isEditing ? 
+          <label>Type your password: 
+          <input onChange={(e)=>setShelterFormData({...shelterFormData, password:e.target.value, confirm_password:e.target.value})} required/>
+          </label>
+          :
+          ''}
         </form>
         {isEditing ? (
           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleSubmit}>Change Profile</button>

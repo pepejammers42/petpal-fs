@@ -145,12 +145,20 @@ class ShelterApplicationList(ListAPIView):
 
     def get_queryset(self):
 
-        try:
-            _ = self.request.user.shelter
-        except Shelter.DoesNotExist:
-            raise ValidationError({'detail': 'User must be a Shelter to see applications.'})
+        queryset = {}
 
-        queryset = Application.objects.filter(pet_listing__shelter=self.request.user.shelter)
+        try:
+            shelter_user = self.request.user.shelter
+            queryset = Application.objects.filter(pet_listing__shelter=shelter_user)
+        except Shelter.DoesNotExist:
+            try:
+                seeker_user = self.request.user.seeker
+                queryset = Application.objects.filter(applicant=seeker_user)
+            except Seeker.DoesNotExist:
+                raise ValidationError({'detail': 'Unauthorized user.'})
+            #raise ValidationError({'detail': 'User must be a Shelter to see applications.'})
+
+        #queryset = Application.objects.filter(pet_listing__shelter=self.request.user.shelter)
 
         status = self.request.query_params.get('status')
         if status is not None and status != '':

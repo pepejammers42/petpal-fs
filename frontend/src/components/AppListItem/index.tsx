@@ -40,20 +40,22 @@ interface App {
 
 const AppListItem = ({app}:{app:App}) => {
     const [error, setError] = useState("");
-    const [pet, setPet] = useState({name: ""});
+    const [pet, setPet] = useState(app.pet_listing);
     const [seeker, setSeeker] = useState({});
 
     return (
+        <Link to={`/applications/${app.id}/`}>
         <div key={app.id} className="app-list-item bg-gray-200 p-4 mb-4 rounded">
             <h3 className="text-lg font-bold mb-2">{`Application #${app.id}`}</h3>
             <p>Status: {app.status}</p>
             <p>Applicant: {app.applicant.first_name +" " + app.applicant.last_name}</p>
             <Link to={`/pet_listings/${app.pet_listing}`}><p>Pet: {pet.name}</p></Link>
-            <p>Creation Time: {app.creation_time}</p>
-            <p>Last Update Time: {app.last_update_time}</p>
+            <p>Creation Time: {(new Date(app.creation_time).toLocaleString()) }</p>
+            <p>Last Update Time: {(new Date(app.last_update_time).toLocaleString())}</p>
             <p>Personal Statement: {app.personal_statement}</p>
             <p>{error}</p>
         </div>
+        </Link>
     );
 };
 

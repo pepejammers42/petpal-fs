@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { ajax } from '../../ajax';
+import { useNavigate, useParams } from 'react-router-dom';
+import { ajax_or_login } from '../../ajax';
 
 interface AppReplyProps {}
 
@@ -17,6 +17,9 @@ const AppReply: React.FC<AppReplyProps> = () => {
   const { appId } = useParams();
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState<string>('');
+  const navigate = useNavigate();
+  const [fetchError, setFetchError] = useState("");
+  const [createError, setCreateError] = useState("");
 
   useEffect(() => {
     // Fetch comments or conversation history
@@ -24,7 +27,7 @@ const AppReply: React.FC<AppReplyProps> = () => {
   }, [appId]);
 
   const fetchComments = () => {
-    ajax(`/comments/applications/${appId}/all/`, { method: 'GET' })
+    ajax_or_login(`/comments/applications/${appId}/all/`, { method: 'GET' }, navigate)
       .then(response => {
         if (response.ok) {
           return response.json();
@@ -32,23 +35,23 @@ const AppReply: React.FC<AppReplyProps> = () => {
           throw Error(response.statusText);
         }
       })
-      .then((json: Comment[]) => {
-        setComments(json);
+      .then((json) => {
+        setComments(json.results);
       })
-      .catch(error => console.error('Error fetching comments:', error));
+      .catch(error => setFetchError(error));
   };
 
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     // Perform the POST request to add a new comment
-    ajax(`/comments/applications/${appId}/`, {
+    ajax_or_login(`/comments/applications/${appId}/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ body: newComment }),
-    })
+    }, navigate)
       .then(response => {
         if (response.ok) {
           setNewComment('');
@@ -57,20 +60,21 @@ const AppReply: React.FC<AppReplyProps> = () => {
           throw Error(response.statusText);
         }
       })
-      .catch(error => console.error('Error submitting comment:', error));
+      .catch(error => setCreateError(error));
   };
 
   return (
     <div className="container mx-auto mt-8">
       <h2 className="text-2xl font-bold mb-4">Comments</h2>
       <div className="mb-4">
-        {comments.map(comment => (
+        {[...comments].reverse().map(comment => (
           <div key={comment.id} className="border p-2 mb-2">
             <p className="font-bold">{comment.user}</p>
             <p>{comment.body}</p>
             <p className="text-xs text-gray-500">{comment.created_at}</p>
           </div>
         ))}
+        <p>{fetchError}</p>
       </div>
 
       <form onSubmit={handleCommentSubmit}>
@@ -84,6 +88,7 @@ const AppReply: React.FC<AppReplyProps> = () => {
         <button type="submit" className="mt-4 bg-blue-500 text-white p-2 rounded">
           Send
         </button>
+        <p>{createError}</p>
       </form>
     </div>
   );

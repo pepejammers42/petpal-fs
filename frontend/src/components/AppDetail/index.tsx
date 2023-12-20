@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { ajax } from '../../ajax';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { ajax, ajax_or_login } from '../../ajax';
+import { useAuth } from "../../hooks/useAuth";
 
 interface AppDetailProps {
   onUpdateStatus: (newStatus: string) => void;
@@ -44,15 +45,6 @@ interface App {
 }
 
 const AppDetail: React.FC<AppDetailProps> = ({ appId, onUpdateStatus }) => {
-    /*const [app, setApp] = useState<App>({
-        id: 0,
-        pet_listing: 0,
-        applicant: 0,
-        status: "",
-        creation_time: "",
-        last_update_time: "",
-        personal_statement: ""
-    });*/
     const [app, setApp] = useState<App>({
       id: 0,
       pet_listing: {"id": 0,
@@ -86,38 +78,16 @@ const AppDetail: React.FC<AppDetailProps> = ({ appId, onUpdateStatus }) => {
 
     });
     const [newStatus, setNewStatus] = useState<string>(app?.status || '');
-    /*const [pet, setPet] = useState({
-      "id": 0,
-      "shelter": 0,
-      "name": "",
-      "description": "",
-      "status": "",
-      "breed": "",
-      "age": 0,
-      "size": "",
-      "color": "",
-      "gender": "",
-      "avatar": "",
-      "medical_history": "",
-      "behavior": "",
-      "special_needs": ""
-    });
-    const [applicant, setApplicant] = useState({
-      "id": 0,
-      "email": "",
-      "password": "",
-      "first_name": "",
-      "last_name": "",
-      "avatar": "",
-      "phone_number": "",
-      "location": "",
-      "preference": ""
-    });
-    */
+    const navigate = useNavigate();
     const [error, setError] = useState("");
+    const [updateError, setUpdateError] = useState("");
+    const [userInfoError, setUserInfoError] = useState("");
+    const [userType, setUserType] = useState("");
+    const [isEditing, setIsEditing] = useState(false);
+    const { user }= useAuth();
   
     useEffect(() => {
-      ajax(`/applications/${appId}/`, { method: 'GET' })
+      ajax_or_login(`/applications/${appId}/`, { method: 'GET' }, navigate)
         .then(response => {
           if (response.ok) {
             return response.json();
@@ -128,21 +98,35 @@ const AppDetail: React.FC<AppDetailProps> = ({ appId, onUpdateStatus }) => {
         .then((json: App) => {
           setApp(json);
           setNewStatus(json.status);
-          //setPet(app.pet_listing);
-          //setApplicant(app.applicant);
         })
-        .catch(error => console.error('Error fetching application details:', error));
+        .catch(error => setError(error));
     }, [appId]);
+
+    useEffect(() => {
+      try {
+        let usertype = localStorage.getItem("user");
+        if (!usertype){
+          return ;
+        }
+        setUserType(usertype);
+      } catch (error) {
+        setUserInfoError("failed to get user information: " + error);
+      }
+    }, [user]);
+
+    const handleEditClick = () => {
+      setIsEditing(true);
+    };
   
     const handleStatusUpdate = () => {
       // Perform the PUT request to update the status
-      ajax(`/applications/${appId}/`, {
+      ajax_or_login(`/applications/${appId}/`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ status: newStatus }),
-      })
+      }, navigate)
         .then(response => {
           if (response.ok) {
             onUpdateStatus(newStatus);//?
@@ -152,32 +136,66 @@ const AppDetail: React.FC<AppDetailProps> = ({ appId, onUpdateStatus }) => {
             throw Error(response.statusText);
           }
         })
-        .catch(error => console.error('Error updating application status:', error));
+        .catch(error => setUpdateError(error));
     };
     
     return (
         <div className="container mx-auto mt-8">
           
-          <p>Status: {app.status}</p>
           <Link to={`/pet_listings/${app.pet_listing.id}`}><p>Pet: {app.pet_listing.name}</p></Link>
           <p>Applicant: {app.applicant.first_name + " " + app.applicant.last_name}</p>
-          <p>Creation Time: {app.creation_time}</p>
-          <p>Last Update Time: {app.last_update_time}</p>
+          <p>Creation Time: {(new Date(app.creation_time)).toLocaleString()}</p>
+          <p>Last Update Time: {(new Date(app.last_update_time)).toLocaleString()}</p>
           <p>Personal Statement: {app.personal_statement}</p>
+          <p>Status: {app.status}</p>
+          <p>{error}</p>
+
+          {isEditing ? 
+          (userType==="seeker"?
+          <>
+              <p>Pet seeker can only update the status of an appilcation from pending or accepted to withdrawn.</p>
+              <label>New Status: </label>
+              <select
+                value={newStatus}
+                onChange={(e) => setNewStatus(e.target.value)}
+                disabled={!isEditing || (newStatus !== "pending" && newStatus !== "accepted")}
+              >
+                <option value="withdrawn">withdrawn</option>
+              </select>
+              <br/>
+          </>
+          :
+          <>
+          <p>Shelter can only update the status of an application from pending to accepted or denied.</p>
+              <label>New Status: </label>
+              <select
+                value={newStatus}
+                onChange={(e) => setNewStatus(e.target.value)}
+                disabled={!isEditing || (newStatus !== "pending")}
+              >
+                <option value="accepted">accepted</option>
+                <option value="denied">denied</option>
+              </select>
+              <br/>
+          </>
+          )
+          :
+          ''
+          }
+
+          {isEditing ? (
+              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleStatusUpdate}>
+                Submit
+              </button>
+            ) : ((userType==="seeker" && (newStatus==="pending" || newStatus==="accepted")) || (userType==="shelter" && newStatus==="pending") ?
+              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleEditClick}>
+                Update Status
+              </button>
+              :
+              ''
+            )}
     
-          <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-700">New Status:</label>
-            <input
-              type="text"
-              value={newStatus}
-              onChange={e => setNewStatus(e.target.value)}
-              className="mt-1 p-2 border rounded w-full"
-            />
-          </div>
-    
-          <button className="mt-4 bg-blue-500 text-white p-2 rounded" onClick={handleStatusUpdate}>
-            Update Status
-          </button>
+          <p>{updateError}</p>
         </div>
     );
 };

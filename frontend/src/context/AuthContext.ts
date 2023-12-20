@@ -8,6 +8,7 @@ export type AuthUser = {
     email: boolean;
     sms: boolean;
   }
+  password: string;
 };
 
 export type SeekerUser = AuthUser & {
@@ -30,7 +31,6 @@ type AuthContextType = {
   user: UserInfo | null;
   login: (credentials: LoginCredentialsType) => Promise<void>;
   logout: () => void;
-  updateUserProfile: (profileData: any) => Promise<void>;
   updateUserPassword: (passwordData: any) => Promise<void>;
   updateNotificationPreferences: (notificationData: any) => void;
 
