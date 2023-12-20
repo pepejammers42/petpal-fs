@@ -40,10 +40,11 @@ interface App {
 }
 
 function ShelterAppList(){
-    const [searchParams, _setSearchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const [error, setError] = useState<string>("");
     const [apps, setApps] = useState<App[]>([]);
     const navigate = useNavigate();
+    const [count, setCount] = useState(0);
 
     const query = useMemo(() => ({
         page: parseInt(searchParams.get('page') || '1', 10),
@@ -63,9 +64,13 @@ function ShelterAppList(){
                 throw Error(response.statusText);
             }
         })
-        .then(json => setApps(json.results))
-        .catch(error => setError("Error fetching application list: "+ error.toString()));
+        .then(json => {setApps(json.results); setCount(json.count);})
+        .catch(error => setError(error.toString()));
     }, [query, navigate]);
+
+    const handlePageChange = (newPage: number) => {
+        setSearchParams({page: newPage.toString()});
+      };
 
     return <>
         <div>
@@ -77,7 +82,13 @@ function ShelterAppList(){
                 ))}
             </div>
             <p>{error}</p>
+            <div>
+          {query.page===1? '' :<button className="mt-4 bg-blue-500 text-white p-2 rounded" onClick={() => handlePageChange(query.page - 1)} disabled={query.page === 1}>Prev</button>}
+          <span> Page {query.page} </span>
+          {(query.page > (count / 10) )?'':<button className="mt-4 bg-blue-500 text-white p-2 rounded" onClick={() => handlePageChange(query.page + 1)}>Next</button>}
         </div>
+        </div>
+        
         </div>
     </>
 
