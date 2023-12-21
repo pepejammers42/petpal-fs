@@ -29,6 +29,7 @@ class PetListingListCreate(ListCreateAPIView):
         if self.request.method == "POST":
             return [permissions.IsAuthenticated()]
         return []
+
     def get(self, request, *args, **kwargs):
         """
             Get a list of all pet listings available.
