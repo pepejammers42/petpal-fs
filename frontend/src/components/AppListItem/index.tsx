@@ -45,11 +45,11 @@ const AppListItem = ({app}:{app:App}) => {
 
     return (
         <Link to={`/applications/${app.id}/`}>
-        <div key={app.id} className="app-list-item bg-gray-200 p-4 mb-4 rounded">
+        <div key={app.id} className="app-list-item flex flex-col bg-slate-50 rounded-lg p-6 dark:bg-slate-800 dark:highlight-white/5">
             <h3 className="text-lg font-bold mb-2">{`Application #${app.id}`}</h3>
             <p>Status: {app.status}</p>
             <p>Applicant: {app.applicant.first_name +" " + app.applicant.last_name}</p>
-            <Link to={`/pet_listings/${app.pet_listing}`}><p>Pet: {pet.name}</p></Link>
+            <p>Pet: {pet.name}</p>
             <p>Creation Time: {(new Date(app.creation_time).toLocaleString()) }</p>
             <p>Last Update Time: {(new Date(app.last_update_time).toLocaleString())}</p>
             <p>Personal Statement: {app.personal_statement}</p>

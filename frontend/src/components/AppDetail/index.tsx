@@ -140,7 +140,7 @@ const AppDetail: React.FC<AppDetailProps> = ({ appId, onUpdateStatus }) => {
     };
     
     return (
-        <div className="container mx-auto mt-8">
+        <div className="container mx-auto max-w-3xl mt-8 p-4 rounded overflow-hidden shadow-lg bg-white">
           
           <Link to={`/pet_listings/${app.pet_listing.id}`}><p>Pet: {app.pet_listing.name}</p></Link>
           <p>Applicant: {app.applicant.first_name + " " + app.applicant.last_name}</p>
@@ -148,11 +148,13 @@ const AppDetail: React.FC<AppDetailProps> = ({ appId, onUpdateStatus }) => {
           <p>Last Update Time: {(new Date(app.last_update_time)).toLocaleString()}</p>
           <p>Personal Statement: {app.personal_statement}</p>
           <p>Status: {app.status}</p>
-          <p>{error}</p>
+          <p className='text-red-500'>{error}</p>
+          
 
           {isEditing ? 
           (userType==="seeker"?
           <>
+              <br/>
               <p>Pet seeker can only update the status of an appilcation from pending or accepted to withdrawn.</p>
               <label>New Status: </label>
               <select
@@ -162,10 +164,12 @@ const AppDetail: React.FC<AppDetailProps> = ({ appId, onUpdateStatus }) => {
               >
                 <option value="withdrawn">withdrawn</option>
               </select>
+              
               <br/>
           </>
           :
           <>
+          <br/>
           <p>Shelter can only update the status of an application from pending to accepted or denied.</p>
               <label>New Status: </label>
               <select
@@ -184,11 +188,11 @@ const AppDetail: React.FC<AppDetailProps> = ({ appId, onUpdateStatus }) => {
           }
 
           {isEditing ? (
-              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleStatusUpdate}>
+              <button className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleStatusUpdate}>
                 Submit
               </button>
             ) : ((userType==="seeker" && (newStatus==="pending" || newStatus==="accepted")) || (userType==="shelter" && newStatus==="pending") ?
-              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleEditClick}>
+              <button className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleEditClick}>
                 Update Status
               </button>
               :

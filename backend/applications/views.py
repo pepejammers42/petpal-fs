@@ -12,8 +12,8 @@ from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.pagination import PageNumberPagination
 
-LISTING_PAGINATION_SIZE = 10 # Number of results to display per page (by default)
-LISTING_PAGINATION_SIZE_MAX = 20 # Maximum number of results to display per page
+LISTING_PAGINATION_SIZE = 6 # Number of results to display per page (by default)
+LISTING_PAGINATION_SIZE_MAX = 9 # Maximum number of results to display per page
 LISTING_PAGINATION_SIZE_PARAM = 'page_size' # Query parameter to read page size from
 
 class ApplicationListPagination(PageNumberPagination):
@@ -31,11 +31,21 @@ class ApplicationCreate(ListCreateAPIView):
         """
             Get a list of applications for the logged in Seeker.
         """
+        try:
+            _ = self.request.user.seeker
+        except Seeker.DoesNotExist:
+            raise ValidationError({'detail': 'User must be a Seeker to create an application.'})
+        
         return super().get(request, *args, **kwargs)
+    
     def post(self, request, *args, **kwargs):
         """
             Create a brand new application with the logged in Seeker to the pet.
         """
+        try:
+            _ = self.request.user.seeker
+        except Seeker.DoesNotExist:
+            raise ValidationError({'detail': 'User must be a Seeker to create an application.'})
         return super().post(request, *args, **kwargs)
 
     def perform_create(self, serializer):
@@ -72,7 +82,7 @@ class ApplicationCreate(ListCreateAPIView):
             if self.request.user.seeker:
                 return Application.objects.filter(applicant=user)
         except Seeker.DoesNotExist:
-            raise ValidationError({'detail': "You do not have permission to access this resource."})
+            raise ValidationError({'detail': "User must be a Seeker to create an application."})
 
 
 class ApplicationRetrieveUpdate(RetrieveUpdateAPIView):

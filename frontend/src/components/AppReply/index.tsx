@@ -86,7 +86,7 @@ const AppReply: React.FC<AppReplyProps> = () => {
   };
 
   return (
-    <div className="container mx-auto mt-8">
+    <div className="container mx-auto mt-8 max-w-3xl">
       <h2 className="text-2xl font-bold mb-4">Comments</h2>
       <div className="mb-4">
         {[...comments].reverse().map(comment => (
@@ -107,7 +107,7 @@ const AppReply: React.FC<AppReplyProps> = () => {
           className="mt-1 p-2 border rounded w-full"
           rows={4}
         />
-        <button type="submit" className="mt-4 bg-blue-500 text-white p-2 rounded">
+        <button type="submit" className="mt-4 bg-blue-500 text-white p-2 rounded font-bold">
           Send
         </button>
         <p>{createError}</p>
