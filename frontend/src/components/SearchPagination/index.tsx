@@ -25,7 +25,7 @@ const SearchPagination: React.FC<SearchPaginationProps> = ({ page, pageSize, max
     };
 
     return (
-        <div className="flex items-center justify-between border-t border-fg-dimmed px-4 py-3 sm:px-6 mb-16">
+        <div className="flex items-center justify-between border-t border-fg-dimmed px-4 mt-8 py-3 sm:px-6 mb-16">
             <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                 <div>
                 <p className="text-sm text-gray-700">

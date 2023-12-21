@@ -26,15 +26,15 @@ function to_url_params(object: { [x: string]: any; size?: string | never[]; gend
 function create_url_params(searchParams: any) {
 
   var temp = {
-    size: searchParams.get("size") ?? [],
+    breed: searchParams.get("breed") ?? [],
     gender: searchParams.get("gender") ?? [],
     status: searchParams.get("status") ?? "available",
     shelter: searchParams.get("shelter") ?? [],
     page: searchParams.get("page") ?? 1
   }
 
-  if (temp['size'] == "All") {
-    temp["size"] = []
+  if (temp['breed'] == "All") {
+    temp["breed"] = []
   }
 
   if (temp['gender'] == "All") {
@@ -55,7 +55,6 @@ function create_url_params(searchParams: any) {
 type PetType = {
   id: number,
   name: number,
-  size: string,
   status: string,
   gender: string,
   breed: string,
@@ -70,9 +69,9 @@ const Search: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [maxCount, setMaxCount] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  const size = ["All", "Small", "Medium", "Large"];
   const gender = ["All", "Male", "Female"];
   const status = ["All", "Available", "Pending", "Adopted"];
+  const breed = ["All","Cat", "Dog"]
   const [shelter, setShelter] = useState<string[]>([]);
   const [pets, setPets] = useState<PetType[]>();
   // const dropdownRef = useRef(null);
@@ -154,10 +153,28 @@ const Search: React.FC = () => {
         <div className="flex">
           <DropdownProvider>
             <div className="w-1/4 p-5 text-center">
-              <div className="sticky top-1/3 transform -translate-y-1/3">
+              {/* <div className="sticky top-1/3 transform -translate-y-1/3"> */}
+              {/* <div className="sticky top-1/2 transform -translate-y-1/2 self-center"> */}
+                  {/* Sort container */}
+
+                <h1 className="mb-2 mt-2 text-2xl">Sort</h1>
+                <div className=" flex justify-center text-fg-primary items-center space-x-2 px-4 ">
+                  <select onChange={(e) => setSortField(e.target.value)} value={sortField} className="p-2 text-fg-primary rounded-md font-medium text-fg-primary ring-1 ring-inset ring-fg-dimmed bg-bg-accent focus:z-20 focus:outline-offset-0">
+                    <option key="sort-0" value="none">None</option>
+                    <option key="sort-1" value="name">Name</option>
+                    <option key="sort-2" value="age">Age</option>
+                  </select>
+                  {sortField && sortField !== 'none' && (
+                    <button onClick={toggleSortOrder}>
+                      {/* {sortOrder === 'asc' ? 'Desc' : 'Asc'} */}
+                      <Icon icon={sortOrder === 'asc' ? carbonSortAscending : carbonSortDescending} />
+                    </button>
+                  )}
+                </div>
+            
 
               {/* Filter section */}
-              <h1 className="mb-4 text-2xl">Filter</h1>
+                <h1 className="mb-2 mt-4 text-2xl">Filter</h1>
                 <DropDown
                     data={shelter}
                     category="shelter"
@@ -166,11 +183,11 @@ const Search: React.FC = () => {
                     onChange={(value) => handleFilterChange("shelter", value)}
                   />
                 <DropDown
-                  data={size}
-                  category="size"
+                  data={breed}
+                  category="breed"
                   enableSearch={false}
-                  value={searchParams.get("size") ?? "All"}
-                  onChange={(value) => handleFilterChange("size", value)}
+                  value={searchParams.get("breed") ?? "All"}
+                  onChange={(value) => handleFilterChange("breed", value)}
                 />
                 <DropDown
                   data={status}
@@ -186,59 +203,26 @@ const Search: React.FC = () => {
                   value={searchParams.get("gender") ?? "All"}
                   onChange={(value) => handleFilterChange("gender", value)}
                 />
-             </div>
+
+              
+             {/* </div> */}
             </div>
           </DropdownProvider>
           <div className="w-3/4 p-4 mr-4">
             {/* Search and sort section */}
             <div className="flex justify-between items-center">
 
-              <form className="flex-grow pr-2">
-                <label id="search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                    </svg>
-                  </div>
-                  <input
-                    type="search"
-                    id="search"
-                    className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="What kind of pet you are looking for? Try 'cat' or 'dog'"
-                    required
-                  // value={searchTerm}
-                  // onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-              </form>
-
-              {/* Sort container */}
-
-              <div className="flex justify-end text-fg-primary items-center space-x-2 px-4">
-                <select onChange={(e) => setSortField(e.target.value)} value={sortField} className="bg-bg-primary">
-                  <option key="sort-0" value="none">No Sort</option>
-                  <option key="sort-1" value="name">Name</option>
-                  <option key="sort-2" value="age">Age</option>
-                </select>
-                {sortField && sortField !== 'none' && (
-                  <button onClick={toggleSortOrder}>
-                    {/* {sortOrder === 'asc' ? 'Desc' : 'Asc'} */}
-                    <Icon icon={sortOrder === 'asc' ? carbonSortAscending : carbonSortDescending} />
-                  </button>
-                )}
-              </div>
+            
             </div>
 
 
-            <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8 my-8 mr-4">
+            <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8 my-4 mr-4">
               {pets?.map(pet => (
                 <div className="mx-auto flex w-65 flex-col justify-center bg-white  rounded-2xl shadow-xl shadow-box-shadow">
                   <img className="aspect-video w-100 rounded-t-2xl object-cover object-center" src={pet.avatar ?? "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/800px-Image_not_available.png?20210219185637"} />
                   <div className="p-4">
                     <h1 className="text-2xl font-medium text-fg-accent pb-2">{pet.name}</h1>
-                    <small className="capitalize text-s">{pet.size}-sized {pet.gender}</small>
-                    <small className="text-s"><br />{pet.age} years old</small>
+                    <small className="text-s">{pet.age}-year-old {pet.gender} {pet.breed}</small>
                   </div>
                 </div>
               ))}

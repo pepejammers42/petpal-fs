@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext, useContext, useRef } from 'react';
-import { IoMdArrowDropdown } from "react-icons/io";
+import { IoIosArrowDown, IoMdArrowDropdown } from "react-icons/io";
 
 const DropdownContext = createContext({
   currentZIndex: 0,
@@ -104,7 +104,7 @@ const DropDown: React.FC<DropdownProps> = ({
                 <span className="text-center text-lg ">{category.toUpperCase()}</span>
                 <span className="text-center text-sm text-fg-accent">{value}</span>
             </div>
-            <span className='text-xl ml-2'><IoMdArrowDropdown /></span>
+            <span className='text-xl ml-2'><IoIosArrowDown /></span>
         </button>
 
     <div
