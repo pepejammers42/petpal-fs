@@ -21,7 +21,6 @@ class PetListingListPagination(PageNumberPagination):
 
 class PetListingListCreate(ListCreateAPIView):
     serializer_class = PetListingSerializer
-    permission_classes = [permissions.IsAuthenticated]
     pagination_class = PetListingListPagination
     def get_permissions(self):
         """

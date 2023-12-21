@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import React, { useState, useEffect, createContext, useContext, useRef } from 'react';
 import { IoMdArrowDropdown } from "react-icons/io";
 
 const DropdownContext = createContext({
@@ -48,8 +48,23 @@ const DropDown: React.FC<DropdownProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredData, setFilteredData] = useState(data || []);
-  const { currentZIndex, setCurrentZIndex } = useDropdownZIndex();
+  const {currentZIndex, setCurrentZIndex } = useDropdownZIndex();
   const [zIndex, setZIndex] = useState(0);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !(dropdownRef.current as HTMLElement).contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+  
 
   useEffect(() => {
     if (isOpen) {
@@ -80,7 +95,7 @@ const DropDown: React.FC<DropdownProps> = ({
   };
 
   return (
-    <div className={`relative ${className}`} style={{ zIndex: isOpen ? zIndex : 1 }}>
+    <div ref={dropdownRef} className={`relative ${className}`} style={{ zIndex: isOpen ? zIndex : 1 }}>
         <button
             className="inline-flex items-center justify-center w-4/5 px-3 py-2 mb-4 text-fg-secondary font-medium bg-primary-100 border border-border-primary rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-border-accent focus:ring-primary-500"
             onClick={toggleDropdown}
@@ -93,7 +108,7 @@ const DropDown: React.FC<DropdownProps> = ({
         </button>
 
     <div
-        className={`${isOpen ? 'block' : 'hidden'} absolute mt-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 p-1 space-y-1`}
+        className={`${isOpen ? 'block' : 'hidden'} absolute  rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 p-1 space-y-1`}
         style={{ width: 'calc(105%)' }}
     >
         {enableSearch && (

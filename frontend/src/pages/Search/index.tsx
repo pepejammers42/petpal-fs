@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from "react-router-dom";
 import axios from "../../api/axios";
-import { DropDown, DropdownProvider } from 'components/DropDown';
+import { DropDown, DropdownProvider } from '../../components/DropDown';
 import { Icon } from '@iconify/react';
 import carbonSortAscending from '@iconify/icons-carbon/sort-ascending';
 import carbonSortDescending from '@iconify/icons-carbon/sort-descending';
@@ -73,7 +73,7 @@ const Search: React.FC = () => {
   const size = ["All", "Small", "Medium", "Large"];
   const gender = ["All", "Male", "Female"];
   const status = ["All", "Available", "Pending", "Adopted"];
-  const shelter = ["Shelter 1", "Shelter 2", "Shelter 3"];
+  const [shelter, setShelter] = useState<string[]>([]);
   const [pets, setPets] = useState<PetType[]>();
   // const dropdownRef = useRef(null);
 
@@ -109,6 +109,16 @@ const Search: React.FC = () => {
     fetchPets();
   }, [query, sortField, sortOrder]);
 
+  useEffect(() => {
+    axios.get('/accounts/shelter/')
+      .then(response => {
+        const shelterNames = response.data.map((shelter: { shelter_name: string }) => shelter.shelter_name);
+        setShelter(shelterNames);
+        console.log(shelter);
+      })
+      .catch(error => console.error('Error:', error));
+  }, []);
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -119,12 +129,6 @@ const Search: React.FC = () => {
 
   const toggleSortOrder = () => {
     setSortOrder(prevOrder => prevOrder === 'asc' ? 'desc' : 'asc');
-  };
-  const handleSortSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedField = event.target.value;
-    setSortField(selectedField);
-    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-    fetchPets(); // Refetch pets with new sort order
   };
 
   const handleFilterChange = (filterCategory: string, value: string) => {
@@ -144,7 +148,7 @@ const Search: React.FC = () => {
 
 
   return (
-    <div className="page-scroll-container" >
+    <div className="page-scroll-container bg-bg-primary" >
       <header></header>
       <main>
         <div className="flex">
@@ -154,6 +158,13 @@ const Search: React.FC = () => {
 
               {/* Filter section */}
               <h1 className="mb-4 text-2xl">Filter</h1>
+                <DropDown
+                    data={shelter}
+                    category="shelter"
+                    enableSearch={true}
+                    value={searchParams.get("shelter") ?? "All"}
+                    onChange={(value) => handleFilterChange("shelter", value)}
+                  />
                 <DropDown
                   data={size}
                   category="size"
@@ -205,7 +216,7 @@ const Search: React.FC = () => {
               {/* Sort container */}
 
               <div className="flex justify-end text-fg-primary items-center space-x-2 px-4">
-                <select onChange={(e) => setSortField(e.target.value)} value={sortField}>
+                <select onChange={(e) => setSortField(e.target.value)} value={sortField} className="bg-bg-primary">
                   <option key="sort-0" value="none">No Sort</option>
                   <option key="sort-1" value="name">Name</option>
                   <option key="sort-2" value="age">Age</option>
@@ -222,8 +233,8 @@ const Search: React.FC = () => {
 
             <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8 my-8 mr-4">
               {pets?.map(pet => (
-                <div className="mx-auto flex w-65 flex-col justify-center bg-white rounded-2xl shadow-xl shadow-slate-300/60">
-                  <img className="aspect-video w-100 rounded-t-2xl object-cover object-center" src="https://t3.gstatic.com/licensed-image?q=tbn:ANd9GcRoT6NNDUONDQmlthWrqIi_frTjsjQT4UZtsJsuxqxLiaFGNl5s3_pBIVxS6-VsFUP_" />
+                <div className="mx-auto flex w-65 flex-col justify-center bg-white  rounded-2xl shadow-xl shadow-box-shadow">
+                  <img className="aspect-video w-100 rounded-t-2xl object-cover object-center" src={pet.avatar ?? "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/800px-Image_not_available.png?20210219185637"} />
                   <div className="p-4">
                     <h1 className="text-2xl font-medium text-fg-accent pb-2">{pet.name}</h1>
                     <small className="capitalize text-s">{pet.size}-sized {pet.gender}</small>
