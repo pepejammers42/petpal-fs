@@ -10,7 +10,7 @@ from ..models import PetListing
 from ..serializers import PetListingSerializer
 
 
-LISTING_PAGINATION_SIZE = 10 # Number of results to display per page (by default)
+LISTING_PAGINATION_SIZE = 8 # Number of results to display per page (by default)
 LISTING_PAGINATION_SIZE_MAX = 20 # Maximum number of results to display per page
 LISTING_PAGINATION_SIZE_PARAM = 'page_size' # Query parameter to read page size from
 

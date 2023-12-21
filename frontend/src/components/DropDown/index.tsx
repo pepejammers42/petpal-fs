@@ -82,14 +82,14 @@ const DropDown: React.FC<DropdownProps> = ({
   return (
     <div className={`relative ${className}`} style={{ zIndex: isOpen ? zIndex : 1 }}>
         <button
-            className="inline-flex items-center justify-center w-4/5 px-3 py-2 text-fg-secondary  font-medium bg-primary-100 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"
+            className="inline-flex items-center justify-center w-4/5 px-3 py-2 mb-4 text-fg-secondary font-medium bg-primary-100 border border-border-primary rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-border-accent focus:ring-primary-500"
             onClick={toggleDropdown}
             >
             <div className="flex flex-col items-center mx-auto">
                 <span className="text-center text-lg ">{category.toUpperCase()}</span>
                 <span className="text-center text-sm text-fg-accent">{value}</span>
             </div>
-            <span className='text-2xl ml-2'><IoMdArrowDropdown /></span>
+            <span className='text-xl ml-2'><IoMdArrowDropdown /></span>
         </button>
 
     <div

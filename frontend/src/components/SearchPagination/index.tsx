@@ -45,14 +45,18 @@ const SearchPagination: React.FC<SearchPaginationProps> = ({ page, pageSize, max
                 </div>
                 <div>
                     <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
-                        <button className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                        {page>1 ?  <button className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-fg-primary ring-1 ring-inset ring-fg-dimmed hover:bg-bg-accent focus:z-20 focus:outline-offset-0"
                             onClick={() => handleItemClick("decrement")}
-                            disabled={page == 1}
-                        >Previous</button>
-                        <button className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                            >Previous</button>: <></>
+                        }
+                        {/* disabled={page == 1} */}
+                        {getToCount() <maxCount?
+                        <button className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-fg-primary ring-1 ring-inset ring-fg-dimmed hover:bg-bg-accent focus:z-20 focus:outline-offset-0"
                             onClick={() => handleItemClick("increment")}
-                            disabled={getToCount() == maxCount}
+                            // disabled={getToCount() == maxCount}
                         >Next</button>
+                        : <></>
+                        }
                     </nav>
                 </div>
             </div>

@@ -72,7 +72,7 @@ const Search: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const size = ["All", "Small", "Medium", "Large"];
   const gender = ["All", "Male", "Female"];
-  const status = ["Available", "Pending", "Adopted"];
+  const status = ["All", "Available", "Pending", "Adopted"];
   const shelter = ["Shelter 1", "Shelter 2", "Shelter 3"];
   const [pets, setPets] = useState<PetType[]>();
   // const dropdownRef = useRef(null);
@@ -149,40 +149,36 @@ const Search: React.FC = () => {
       <main>
         <div className="flex">
           <DropdownProvider>
-            <div className="w-1/4 p-5">
+            <div className="w-1/4 p-5 text-center">
+              <div className="sticky top-1/3 transform -translate-y-1/3">
 
               {/* Filter section */}
-
-              <div className="mb-4">
+              <h1 className="mb-4 text-2xl">Filter</h1>
                 <DropDown
                   data={size}
                   category="size"
-                  enableSearch={true}
+                  enableSearch={false}
                   value={searchParams.get("size") ?? "All"}
                   onChange={(value) => handleFilterChange("size", value)}
                 />
-              </div>
-              <div className="mb-4">
                 <DropDown
                   data={status}
                   category="status"
-                  enableSearch={true}
-                  value={searchParams.get("status") ?? "All"}
+                  enableSearch={false}
+                  value={searchParams.get("status") ?? "Available"}
                   onChange={(value) => handleFilterChange("status", value)}
                 />
-              </div>
-              <div className="mb-4">
                 <DropDown
                   data={gender}
                   category="gender"
-                  enableSearch={true}
+                  enableSearch={false}
                   value={searchParams.get("gender") ?? "All"}
                   onChange={(value) => handleFilterChange("gender", value)}
                 />
-              </div>
+             </div>
             </div>
           </DropdownProvider>
-          <div className="w-3/4 p-4">
+          <div className="w-3/4 p-4 mr-4">
             {/* Search and sort section */}
             <div className="flex justify-between items-center">
 
@@ -224,47 +220,23 @@ const Search: React.FC = () => {
             </div>
 
 
-            <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-4 m-4">
+            <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8 my-8 mr-4">
               {pets?.map(pet => (
                 <div className="mx-auto flex w-65 flex-col justify-center bg-white rounded-2xl shadow-xl shadow-slate-300/60">
-                  <img className="aspect-video w-100 rounded-t-2xl object-cover object-center" src="https://images.pexels.com/photos/3311574/pexels-photo-3311574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" />
+                  <img className="aspect-video w-100 rounded-t-2xl object-cover object-center" src="https://t3.gstatic.com/licensed-image?q=tbn:ANd9GcRoT6NNDUONDQmlthWrqIi_frTjsjQT4UZtsJsuxqxLiaFGNl5s3_pBIVxS6-VsFUP_" />
                   <div className="p-4">
-                    <h1 className="text-2xl font-medium text-slate-600 pb-2">{pet.name}</h1>
-                    <small className="capitalize text-s">Breed: {pet.breed}<br />Gender: {pet.gender}<br />Age: {pet.age}</small>
+                    <h1 className="text-2xl font-medium text-fg-accent pb-2">{pet.name}</h1>
+                    <small className="capitalize text-s">{pet.size}-sized {pet.gender}</small>
+                    <small className="text-s"><br />{pet.age} years old</small>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Pagination */}
-            {/* <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 mb-16">
-              <div className="flex flex-1 justify-between sm:hidden">
-                <a href="#" className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Previous</a>
-                <a href="#" className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Next</a>
-              </div>
-              <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-                <div>
-                  <p className="text-sm text-gray-700">
-                    Showing
-                    <span className="font-medium"> 1 </span> 
-                    to 
-                    <span className="font-medium"> 10 </span> 
-                    of 
-                    <span className="font-medium"> 21 </span> 
-                    results 
-                  </p>
-                </div>
-                <div>
-                  <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
-                    <a href="#" className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">Previous</a>
-                    <a href="#" className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">Next</a>
-                  </nav>
-                </div>
-              </div>
-            </div> */}
+    
             <SearchPagination 
               page={searchParams.get("page") ? Number(searchParams.get("page")) : 1 } 
-              pageSize={searchParams.get("page_size") ? Number(searchParams.get("page_size")) : 10} 
+              pageSize={searchParams.get("page_size") ? Number(searchParams.get("page_size")) : 8} 
               maxCount={maxCount}
               onChange={(value) => handleFilterChange("page", value.toString())} />
 
