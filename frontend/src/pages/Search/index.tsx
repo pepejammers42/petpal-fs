@@ -71,7 +71,7 @@ const Search: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const params = to_url_params(query);
+      const params = to_url_params(query, true);
       let sortParam = '';
       if (sortField && sortField !== 'none') {
         sortParam = `${sortOrder === 'asc' ? '' : '-'}${sortField}`;

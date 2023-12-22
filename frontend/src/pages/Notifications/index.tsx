@@ -16,13 +16,16 @@ interface Notification {
     link: string
 }
 
+
 const NotificationsPage: React.FC = () => {
     function create_url_params(searchParams: any) {
 
         var temp = {
-            page: searchParams.get("page") ?? 1
+            page: searchParams.get("page") ?? 1,
+            is_read: searchParams.get("is_read") ?? []
         }
 
+        temp.is_read = (temp.is_read == "read") ? "True" : "False"
         return temp
     }
 
@@ -70,7 +73,7 @@ const NotificationsPage: React.FC = () => {
 
     const fetchNotifications = async () => {
         try {
-            const params = to_url_params(query);
+            const params = to_url_params(query, false);
             const sortParam = null;
             const response = await axios.get(`/notifications/?${params}${sortParam ? `&sort_by=${sortParam}` : ''}`);
             console.log(response)
@@ -126,8 +129,8 @@ const NotificationsPage: React.FC = () => {
                     data={statuses}
                     category="Status"
                     enableSearch={true}
-                    value={searchParams.get("status") ?? "All"}
-                    onChange={(value) => handleFilterChange("status", value)} />
+                    value={searchParams.get("is_read") ?? "All"}
+                    onChange={(value) => handleFilterChange("is_read", value)} />
             </div>
 
 
