@@ -5,15 +5,13 @@ import { useState, useEffect, useRef } from "react";
 import { ChevronDoubleDownIcon, BellIcon } from "@heroicons/react/24/solid";
 import { Outlet, Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-type Props = {};
 
 // TODO: responsive design (scaling elements)
 // TODO: css design update
 // TODO: add transition on menu page (responsive)
 // TODO: fix paragraphs with proper links
-// TODO: add one more navbar for the logged in user
 
-const Layout = (props: Props) => {
+const Layout = () => {
   const flexBetween = "flex justify-between items-center";
   const isAboveMedium = useMediaQuery("(min-width: 1060px)");
   const [isOpen, setIsOpen] = useState(false);
@@ -54,7 +52,7 @@ const Layout = (props: Props) => {
   }, [iconRef, profileRef]);
   const Dropdown = () => (
     <div
-      className="absolute right-0 top-7 mt-10 py-2 w-48 bg-white rounded-md shadow-xl z-50"
+      className="absolute right-0 top-2 md:top-10 mt-10 py-2 w-48 bg-white rounded-md shadow-xl z-50"
       ref={profileRef}
     >
       <Link
@@ -63,12 +61,6 @@ const Layout = (props: Props) => {
       >
         Profile
       </Link>
-      <a
-        href="/settings"
-        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-      >
-        Settings
-      </a>
       <button
         onClick={handleLogout}
         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -91,13 +83,13 @@ const Layout = (props: Props) => {
     }
   };
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <header>
         <nav>
           <div
             className={`${flexBetween} fixed top-0 z-30 w-full bg-gradient-header h-12 md:h-20 px-4`}
           >
-            <div className={`${flexBetween} mx-auto w-[1194px]`}>
+            <div className={`${flexBetween} mx-auto w-full`}>
               <div className={`${flexBetween} w-full md:gap-16`}>
                 <div className={`${flexBetween} gap-2 md:gap-6`}>
                   <div className={`${flexBetween} gap-2`}>
@@ -174,12 +166,12 @@ const Layout = (props: Props) => {
                           >
                             Pets
                           </Link>
-                          <Link
-                            to="/explore"
+                          {/* <Link
+                            to="/search"
                             className="px-6 py-4 hover:py-5 hover:text-fg-alt-3 hover:bg-primary-100"
                           >
                             Explore
-                          </Link>
+                          </Link> */}
                         </>
                       )}
                     </div>
@@ -233,20 +225,88 @@ const Layout = (props: Props) => {
               className="fixed left-0 bottom-0 z-40 h-full w-[180px] bg-gradient-header drop-shadow-xl text-fg-alt-3 flex flex-col gap-10 text-xl pt-8 pl-4 "
               ref={menuRef}
             >
-              <p>Home</p>
-              <p>Shelter</p>
-              <p>Pets</p>
-              <p>Explore</p>
+              {localStorage.getItem("user") === "seeker" ? (
+                // Render for Seeker
+                <>
+                  <Link
+                    to="/"
+                    className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    to="/shelter"
+                    className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
+                  >
+                    Shelters
+                  </Link>
+                  <Link
+                    to="/pets"
+                    className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
+                  >
+                    Pets
+                  </Link>
+                  <Link
+                    to="/favorites"
+                    className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
+                  >
+                    Favorites
+                  </Link>
+                </>
+              ) : localStorage.getItem("user") === "shelter" ? (
+                // Render for Shelter
+                <>
+                  <Link
+                    to="/my-shelter"
+                    className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
+                  >
+                    My Shelter Page
+                  </Link>
+                  <Link
+                    to="/list-pet"
+                    className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
+                  >
+                    List a New Pet
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/"
+                    className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    to="/shelter"
+                    className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
+                  >
+                    Shelter
+                  </Link>
+                  <Link
+                    to="/pets"
+                    className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
+                  >
+                    Pets
+                  </Link>
+                  {/* <Link
+                    to="/explore"
+                    className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
+                  >
+                    Explore
+                  </Link> */}
+                </>
+              )}
             </div>
           )}
         </nav>
       </header>
-      <main className="pt-12 md:pt-20">
+      <main className="pt-12 md:pt-20 flex-grow pb-10">
         <Outlet />
       </main>
-      <footer className="pb-12 md:pb-20">
+      <footer className="">
         <div
-          className={`${flexBetween} fixed bottom-0 z-30 w-full bg-gradient-header h-12 md:h-20 px-4`}
+          className={`${flexBetween} z-30 w-full bg-gradient-header h-12 md:h-20 px-4`}
         >
           <div className={`${flexBetween} flex-col mx-auto w-[1194px] gap-2`}>
             <div
@@ -264,7 +324,7 @@ const Layout = (props: Props) => {
           </div>
         </div>
       </footer>
-    </>
+    </div>
   );
 };
 
