@@ -96,7 +96,7 @@ const Search: React.FC = () => {
   useEffect(() => {
     axios.get('/accounts/shelter/')
       .then(response => {
-        const shelterNames = response.data.map((shelter: { shelter_name: string }) => shelter.shelter_name);
+        const shelterNames = response.data.results.map((shelter: { shelter_name: string }) => shelter.shelter_name);
         setShelter(shelterNames);
         console.log(shelter);
       })
