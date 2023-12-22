@@ -5,14 +5,25 @@ from django.core.exceptions import PermissionDenied
 from drf_yasg.utils import swagger_auto_schema
 from applications.models import Application
 from rest_framework.exceptions import ValidationError
+from rest_framework.pagination import PageNumberPagination
 
 from ..models import Shelter, Seeker
 from ..serializers import ShelterSerializer, SeekerSerializer
+
+LISTING_PAGINATION_SIZE = 10 # Number of results to display per page (by default)
+LISTING_PAGINATION_SIZE_MAX = 20 # Maximum number of results to display per page
+LISTING_PAGINATION_SIZE_PARAM = 'page_size' # Query parameter to read page size from
+
+class ShelterListPagination(PageNumberPagination):
+    page_size = LISTING_PAGINATION_SIZE  # Number of results to display per page (by default)
+    max_page_size = LISTING_PAGINATION_SIZE_MAX # Maximum number of results to display per page
+    page_size_query_param = LISTING_PAGINATION_SIZE_PARAM
 
 class ShelterListCreateAPIView(ListCreateAPIView):
     queryset = Shelter.objects.all()
     serializer_class = ShelterSerializer
     permission_classes = [AllowAny]
+    pagination_class = ShelterListPagination
 
     def get(self, request, *args, **kwargs):
         """

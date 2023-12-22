@@ -18,6 +18,7 @@ import NotFound from "./pages/NotFound";
 import ShelterDetail from "./pages/ShelterDetail";
 import ShelterManagement from "./pages/ShelterManagement";
 import PetDetail from "./pages/PetDetail";
+import ShelterList from "./pages/ShelterList";
 
 function PrivateRoute () {
   return localStorage.getItem('user') ? <Outlet /> : <Navigate to="/login" replace />;
@@ -47,6 +48,7 @@ function App() {
               <Route path="/profile" element={<UserProfile />} />
               <Route path="/shelter-detail/:shelterId/" element={<ShelterDetail />} />
               <Route path="/shelter-management/:shelterId/" element={<ShelterManagement/>}/>
+              <Route path="/shelter-list/" element={<ShelterList/>}/>
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>

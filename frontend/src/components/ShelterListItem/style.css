@@ -1,11 +1,11 @@
-#profile-pic-sbi {
+#profile-pic-sli {
     overflow: clip;
     vertical-align: middle;
 }
 
-#circle-container-sbi {
-    width: 180px;
-    height: 180px;
+#circle-container-sli {
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     overflow: hidden;
 }

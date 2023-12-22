@@ -43,6 +43,9 @@ const UserProfile = () => {
   const [uploadedImage, setUploadedImage] = useState<string | ArrayBuffer | null>(null);
   const [uploadedFile, setUploadedFile] = useState<File | string>(user?.avatar || "");
   const [isUploaded, setIsUploaded] = useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
+  const [dltError, setDltError] = useState("");
 
   useEffect(() => {
     let userType = localStorage.getItem("user");
@@ -101,6 +104,7 @@ const UserProfile = () => {
   const handleTogglePasswordEdit = () => {
     setIsEditingPassword((prev) => !prev);
   };
+
 
   const handlePasswordSubmit = async () => {
     
@@ -328,8 +332,8 @@ const UserProfile = () => {
         <div className="flex flex-row justify-around">
         <div id="profile-photo" className="flex flex-col gap-2">
           <h2 className="text-xl font-bold pb-2">Profile Photo</h2>
-          <div id="circle-container">
-            <img id="profile-pic"  alt="profile icon" src={uploadedImage?.toString() || user?.avatar || userAvatar}/>       
+          <div id="circle-container-up">
+            <img id="profile-pic-up"  alt="profile icon" src={uploadedImage?.toString() || user?.avatar || userAvatar}/>       
           </div>
           
           {isEditing ?
@@ -431,6 +435,33 @@ const UserProfile = () => {
     );
   };
 
+  const handleDelete = async () => {
+    try {
+      let userType = localStorage.getItem("user");
+      const userID = localStorage.getItem("userID");
+
+      if (!userType || !userID) {
+        // Handle the case where userType or userID is not available
+
+        return;
+      }
+
+
+      const response = await axios.delete(`/accounts/${userType}/${userID}/`);
+      if (response.status === 204){
+        setIsDeletingAccount(false);
+        setIsDeleted(true);
+        
+      } else {
+        console.error("Error deleting user profile:", response.statusText);
+        setDltError("Error deleting user profile1:" + response.statusText);
+      }
+    } catch (error){
+      console.error("Error deleting user profile2:", error);
+      setDltError("Error deleting user profile2:" + error);
+    }
+  };
+
 
   return (
     <>
@@ -480,6 +511,31 @@ const UserProfile = () => {
               </button>
             )}
             <p>{pwError}</p>
+          </div>
+
+          <div className="flex flex-col gap-4 col-span-7 bg-white p-6 rounded-md">
+          <h2 className="text-xl font-bold ">Delete Account</h2>
+          {isDeletingAccount ? 
+          <div className="pt-8 flex flex-row gap-2 justify-center">
+          <label >Confirm deleting: </label>
+          <input type="checkbox" required/>
+          
+          </div>
+          :
+          ''}
+
+          {isDeletingAccount ? (
+              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleDelete}>
+                Delete Account
+              </button>
+            ) : (
+              isDeleted ?
+              <p className="text-center text-blue-700">Your account is Deleted</p>
+              :
+              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={()=>setIsDeletingAccount(true)}>
+                Want to delete your account?
+              </button>
+            )}
           </div>
         </div>
       </div>

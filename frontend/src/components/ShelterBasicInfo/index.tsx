@@ -46,10 +46,10 @@ const ShelterBasicInfo = ({sid}:{sid:number}) => {
         <>
         <div id="basic-info-container" className="flex flex-col gap-16 ">
             <div className="flex flex-row gap-20 mx-auto max-w-5xl justify-end">
-                <div id="circle-container">
-                    <img id="profile-pic"  alt="profile icon" src={shelterInfo.avatar || userAvatar}/>
+                <div id="circle-container-sbi">
+                    <img id="profile-pic-sbi"  alt="profile icon" src={shelterInfo.avatar || userAvatar}/>
                 </div>
-                <div id="info-details" className="rounded overflow-hidden shadow-lg bg-white py-2 pl-4 pr-48">
+                <div id="info-details" className="rounded overflow-hidden shadow-lg bg-white py-4 pl-8 pr-48">
                     <div>Shelter Name: {shelterInfo.shelter_name}</div>
                     <div>Phone Number: {shelterInfo.phone_number}</div>
                     <div>Email: {shelterInfo.email}</div>
