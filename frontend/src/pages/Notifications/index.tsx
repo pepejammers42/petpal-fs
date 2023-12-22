@@ -98,7 +98,6 @@ const NotificationsPage: React.FC = () => {
                     is_read: true,
                 }
             );
-            setNotifications(response.data.results)
             setError(null);
         } catch (err) {
             setError("Failed to update notification.");
