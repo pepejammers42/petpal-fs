@@ -67,12 +67,12 @@ const Layout = () => {
       >
         Logout
       </button>
-      <a
-        href="/logout"
+      <Link
+        to="/applications"
         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
       >
         My Applications
-      </a>
+      </Link>
     </div>
   );
   const handleLogout = async () => {
@@ -94,9 +94,12 @@ const Layout = () => {
                 <div className={`${flexBetween} gap-2 md:gap-6`}>
                   <div className={`${flexBetween} gap-2`}>
                     <img className="h-10 md:h-14" alt="logo" src={logo} />
-                    <p className="text-2xl md:text-4xl font-righteous text-bg-accent">
+                    <Link
+                      to="/"
+                      className="text-2xl md:text-4xl font-righteous text-bg-accent hover:text-bg-success"
+                    >
                       PetPal
-                    </p>
+                    </Link>
                   </div>
                   {isAboveMedium ? (
                     <div
@@ -134,7 +137,9 @@ const Layout = () => {
                         // Render for Shelter
                         <>
                           <Link
-                            to="/my-shelter"
+                            to={`/shelter-management/${localStorage.getItem(
+                              "userID",
+                            )}`}
                             className="px-6 py-4 hover:py-5 hover:text-fg-alt-3 hover:bg-primary-100"
                           >
                             My Shelter Page
@@ -188,7 +193,10 @@ const Layout = () => {
                   {user ? (
                     // Render for logged in user
                     <>
-                      <Link to="/notifications/"> <BellIcon className="h-6 w-6 text-fg-alt-3" />{" "}</Link>
+                      <Link to="/notifications/">
+                        {" "}
+                        <BellIcon className="h-6 w-6 text-fg-alt-3" />{" "}
+                      </Link>
                       {/* Bell icon */}
                       <img
                         className="h-10 md:h-14 rounded-full"
