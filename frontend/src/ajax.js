@@ -4,6 +4,16 @@
 
 export async function ajax(url, settings) {
     const domain = "http://localhost:8000";
+    const token = "Bearer " + localStorage.getItem('token');
+
+    if ('headers' in settings) {
+        settings.headers['Authorization'] = token;
+    }
+    else {
+        settings['headers'] = {
+            Authorization : token,
+        }
+    }
     return await fetch(domain + url, settings);
 }
 

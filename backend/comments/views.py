@@ -12,8 +12,8 @@ from rest_framework.views import APIView
 from rest_framework import status
 
 # Create your views here.
-COMMENT_PAGINATION_SIZE = 10 # Number of results to display per page (by default)
-COMMENT_PAGINATION_SIZE_MAX = 20 # Maximum number of results to display per page
+COMMENT_PAGINATION_SIZE = 5 # Number of results to display per page (by default)
+COMMENT_PAGINATION_SIZE_MAX = 10 # Maximum number of results to display per page
 COMMENT_PAGINATION_SIZE_PARAM = 'page_size' # Query parameter to read page size from
 
 class CommentPagination(PageNumberPagination):

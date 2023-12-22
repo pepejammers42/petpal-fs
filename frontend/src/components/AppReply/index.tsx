@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { ajax_or_login } from '../../ajax';
 import { useAuth } from "../../hooks/useAuth";
 
@@ -25,12 +25,17 @@ const AppReply: React.FC<AppReplyProps> = () => {
   const [userID, setUserID] = useState(0);
   const [userInfoError, setUserInfoError] = useState("");
   const { user }= useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [count, setCount] = useState(0);
+  const query = useMemo(() => ({
+    page: parseInt(searchParams.get('page') || '1', 10)
+}), [searchParams]);
 
   useEffect(() => {
     // Fetch comments or conversation history
     fetchComments();
 
-  }, [appId]);
+  }, [appId, query]);
 
   useEffect(() => {
     try {
@@ -49,7 +54,8 @@ const AppReply: React.FC<AppReplyProps> = () => {
   }, [user]);
 
   const fetchComments = () => {
-    ajax_or_login(`/comments/applications/${appId}/all/`, { method: 'GET' }, navigate)
+    const {page} = query;
+    ajax_or_login(`/comments/applications/${appId}/all/?page=${page}`, { method: 'GET' }, navigate)
       .then(response => {
         if (response.ok) {
           return response.json();
@@ -59,6 +65,7 @@ const AppReply: React.FC<AppReplyProps> = () => {
       })
       .then((json) => {
         setComments(json.results);
+        setCount(json.count);
       })
       .catch(error => setFetchError(error));
   };
@@ -85,6 +92,10 @@ const AppReply: React.FC<AppReplyProps> = () => {
       .catch(error => setCreateError(error));
   };
 
+  const handlePageChange = (newPage: number) => {
+    setSearchParams({page: newPage.toString()});
+};
+
   return (
     <div className="container mx-auto mt-8 max-w-3xl">
       <h2 className="text-2xl font-bold mb-4">Comments</h2>
@@ -97,6 +108,10 @@ const AppReply: React.FC<AppReplyProps> = () => {
           </div>
         ))}
         <p>{fetchError}</p>
+        <div className='flex gap-2 justify-end' >
+                    {(query.page >= (count / 5) )?<button className="mt-4 bg-gray-500 text-white p-2 rounded" onClick={() => handlePageChange(query.page + 1)} disabled={true}>Prev</button>:<button className="mt-4 bg-blue-500 text-white p-2 rounded" onClick={() => handlePageChange(query.page + 1)}>Prev</button>}
+                    {query.page===1? <button className="mt-4 bg-gray-500 text-white p-2 rounded" onClick={() => handlePageChange(query.page - 1)} disabled={true}>Next</button> :<button className="mt-4 bg-blue-500 text-white p-2 rounded" onClick={() => handlePageChange(query.page - 1)} disabled={query.page === 1}>Next</button>}
+                </div>
       </div>
 
       <form onSubmit={handleCommentSubmit}>

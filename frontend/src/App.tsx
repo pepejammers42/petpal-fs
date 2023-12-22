@@ -13,6 +13,8 @@ import AppList from "./pages/AppList";
 import Application from "./pages/Application";
 import UserProfile from "./pages/UserProfile";
 import NotFound from "./pages/NotFound";
+import ShelterDetail from "./pages/ShelterDetail";
+import ShelterManagement from "./pages/ShelterManagement";
 
 function App() {
   return (
@@ -32,6 +34,8 @@ function App() {
               <Route path="/applications/:appId/" element={<Application />} />
               <Route path="/pet_listings/" element={<PetCreation />} />
               <Route path="/profile" element={<UserProfile />} />
+              <Route path="/shelter-detail/:shelterId/" element={<ShelterDetail />} />
+              <Route path="/shelter-management/:shelterId/" element={<ShelterManagement/>}/>
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
