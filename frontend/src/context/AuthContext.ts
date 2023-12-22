@@ -5,6 +5,10 @@ export type AuthUser = {
   phone_number: string;
 };
 
+export type LoginError = {
+  message: string;
+};
+
 export type SeekerUser = AuthUser & {
   first_name: string;
   last_name: string;
@@ -23,7 +27,7 @@ export type UserInfo = SeekerUser | ShelterUser;
 type AuthContextType = {
   token: string | null;
   user: UserInfo | null;
-  login: (credentials: LoginCredentialsType) => Promise<void>;
+  login: (credentials: LoginCredentialsType) => Promise<LoginError | null>;
   logout: () => void;
 };
 

@@ -75,53 +75,111 @@ function SignupShelter() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-2">
-      <input {...register("email")} type="email" placeholder="Email" />
-      {errors.email && (
-        <p className="text-red-500">{`${errors.email.message}`}</p>
-      )}
-      <input {...register("shelterName")} placeholder="Shelter Name" />
-      {errors.shelterName && (
-        <p className="text-red-500">{`${errors.shelterName.message}`}</p>
-      )}
+    <div className="w-1/5 mx-auto gap-2">
+      <h2 className="font-noto text-4xl font-medium pt-10">Pet Shelter</h2>
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-2">
+        <label className="flex flex-col">
+          Email
+          <input
+            {...register("email")}
+            type="email"
+            placeholder="Email"
+            className="border-black border"
+          />
+        </label>
+        {errors.email && (
+          <p className="text-red-500">{`${errors.email.message}`}</p>
+        )}
 
-      <input {...register("password")} placeholder="Password" type="password" />
-      {errors.password && (
-        <p className="text-red-500">{`${errors.password.message}`}</p>
-      )}
-      <input
-        {...register("confirmPassword")}
-        placeholder="Confirm Password"
-        type="password"
-      />
-      {errors.confirmPassword && (
-        <p className="text-red-500">{`${errors.confirmPassword.message}`}</p>
-      )}
-      <input {...register("phoneNumber")} placeholder="Phone Number" />
-      {errors.phoneNumber && (
-        <p className="text-red-500">{`${errors.phoneNumber.message}`}</p>
-      )}
+        <label className="flex flex-col">
+          Shelter Name
+          <input
+            {...register("shelterName")}
+            placeholder="Shelter Name"
+            className="border-black border"
+          />
+        </label>
+        {errors.shelterName && (
+          <p className="text-red-500">{`${errors.shelterName.message}`}</p>
+        )}
 
-      <input {...register("description")} placeholder="Description" />
-      {errors.description && (
-        <p className="text-red-500">{`${errors.description.message}`}</p>
-      )}
+        <label className="flex flex-col">
+          Password
+          <input
+            {...register("password")}
+            type="password"
+            placeholder="Password"
+            className="border-black border"
+          />
+        </label>
+        {errors.password && (
+          <p className="text-red-500">{`${errors.password.message}`}</p>
+        )}
 
-      <input {...register("address")} placeholder="Address" />
-      {errors.address && (
-        <p className="text-red-500">{`${errors.address.message}`}</p>
-      )}
-      <input type="file" onChange={onFileChange} />
-      {avatar && <p>File: {avatar.name}</p>}
+        <label className="flex flex-col">
+          Confirm Password
+          <input
+            {...register("confirmPassword")}
+            type="password"
+            placeholder="Confirm Password"
+            className="border-black border"
+          />
+        </label>
+        {errors.confirmPassword && (
+          <p className="text-red-500">{`${errors.confirmPassword.message}`}</p>
+        )}
 
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="bg-blue-500 disabled:bg-gray-500 py-2 rounded"
-      >
-        Submit
-      </button>
-    </form>
+        <label className="flex flex-col">
+          Phone Number
+          <input
+            {...register("phoneNumber")}
+            placeholder="Phone Number"
+            className="border-black border"
+          />
+        </label>
+        {errors.phoneNumber && (
+          <p className="text-red-500">{`${errors.phoneNumber.message}`}</p>
+        )}
+
+        <label className="flex flex-col">
+          Description
+          <input
+            {...register("description")}
+            placeholder="Description"
+            className="border-black border"
+          />
+        </label>
+        {errors.description && (
+          <p className="text-red-500">{`${errors.description.message}`}</p>
+        )}
+
+        <label className="flex flex-col">
+          Address
+          <input
+            {...register("address")}
+            placeholder="Address"
+            className="border-black border"
+          />
+        </label>
+        {errors.address && (
+          <p className="text-red-500">{`${errors.address.message}`}</p>
+        )}
+
+        <label className="flex flex-col">
+          Avatar
+          <input type="file" onChange={onFileChange} />
+        </label>
+        {avatar && <p>File: {avatar.name}</p>}
+
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="bg-white disabled:bg-gray-500 py-2 rounded border-black border-2 w-2/5 mx-auto"
+        >
+          Sign Up
+        </button>
+      </form>
+    </div>
   );
 }
 

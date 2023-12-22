@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "../api/axios";
-import AuthContext, { UserInfo, SeekerUser, ShelterUser } from "./AuthContext";
+import AuthContext, {
+  UserInfo,
+  SeekerUser,
+  ShelterUser,
+  LoginError,
+} from "./AuthContext";
 
 type LoginCredentialsType = {
   email: string;
@@ -74,7 +79,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  const login = async (credentials: LoginCredentialsType) => {
+  const login = async (
+    credentials: LoginCredentialsType,
+  ): Promise<LoginError | null> => {
     try {
       const response = await axios.post("/api/token/", credentials);
       const { access, userID, user } = response.data;
@@ -82,9 +89,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       localStorage.setItem("userID", userID);
       localStorage.setItem("user", user);
       setToken(access);
-    } catch (error) {
-      console.error("Login error", error);
-      // Handle error
+      return null; // No error
+    } catch (error: any) {
+      let errorMessage = "No active accounts with given credentials found.";
+      return { message: errorMessage };
     }
   };
 

@@ -61,12 +61,6 @@ const Layout = () => {
       >
         Profile
       </Link>
-      <a
-        href="/settings"
-        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-      >
-        Settings
-      </a>
       <button
         onClick={handleLogout}
         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -89,7 +83,7 @@ const Layout = () => {
     }
   };
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <header>
         <nav>
           <div
@@ -239,12 +233,12 @@ const Layout = () => {
           )}
         </nav>
       </header>
-      <main className="pt-12 md:pt-20">
+      <main className="pt-12 md:pt-20 flex-grow pb-10">
         <Outlet />
       </main>
-      <footer className="pb-12 md:pb-20">
+      <footer className="">
         <div
-          className={`${flexBetween} fixed bottom-0 z-30 w-full bg-gradient-header h-12 md:h-20 px-4`}
+          className={`${flexBetween} z-30 w-full bg-gradient-header h-12 md:h-20 px-4`}
         >
           <div className={`${flexBetween} flex-col mx-auto w-[1194px] gap-2`}>
             <div
@@ -262,7 +256,7 @@ const Layout = () => {
           </div>
         </div>
       </footer>
-    </>
+    </div>
   );
 };
 
