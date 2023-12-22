@@ -5,12 +5,12 @@ function PetCreation(){
     const [petDetails, setPetDetails] = useState({
         name: "",
         description: "",
-        status: "",
+        status: "available",
         breed: "",
         age: 0,
-        size: "",
+        size: "small",
         color: "",
-        gender: "",
+        gender: "male",
         medical_history: "",
         behavior: "",
         special_needs: "",
@@ -23,7 +23,7 @@ function PetCreation(){
                 <h1 className="font-bold text-2xl">Pet Creation Page </h1>
             </div>
             <div className="p-4 bg-white">
-                <PetForm submitButtonText="Create a pet!" read_only={false} pet_id_extension={""} onFormSubmit={() => {}} pet={petDetails} />
+                <PetForm submit_button_text="Create a pet!" read_only={false} method={"post"} endpoint_add={"/"} onFormSubmit={() => {}} pet={petDetails} />
             </div>
         </div>
     </>

@@ -21,14 +21,15 @@ interface Pet {
 }
 
 interface PetFormProps {
-  submitButtonText: string;
+  submit_button_text: string;
   read_only: boolean;
-  pet_id_extension: string;
+  endpoint_add: string;
+  method: "post" | "put";
   onFormSubmit: () => void; // Callback function type
   pet: Pet;
 }
 
-const PetForm = ({ submitButtonText, read_only, pet_id_extension, onFormSubmit, pet }: PetFormProps) => {
+const PetForm = ({ submit_button_text, read_only, endpoint_add, method, onFormSubmit, pet }: PetFormProps) => {
   const schema = z.object({
     name: z.string().min(1).max(20),
     description: z.string(),
@@ -80,7 +81,7 @@ const PetForm = ({ submitButtonText, read_only, pet_id_extension, onFormSubmit, 
         }
       });
   
-      const response = await axios.put('http://127.0.0.1:8000/pet_listings'+pet_id_extension, formData, {
+      const response = await axios[method]('http://127.0.0.1:8000/pet_listings'+endpoint_add, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -153,9 +154,9 @@ const PetForm = ({ submitButtonText, read_only, pet_id_extension, onFormSubmit, 
       <textarea {...register("special_needs")} id="special_needs" placeholder="Special Needs" className="w-full rounded-lg py-1.5 px-3 border-2 border-gray-400" disabled={read_only} />
       {errors.special_needs && <><div></div><p className="text-red-500">{errors.special_needs.message}</p></>}
 
-      {submitButtonText && (
+      {submit_button_text && (
         <button type="submit" disabled={isSubmitting} className="bg-blue-500 disabled:bg-gray-500 py-2 rounded w-full col-span-full">
-          {submitButtonText}
+          {submit_button_text}
         </button>
       )}
     </form>
