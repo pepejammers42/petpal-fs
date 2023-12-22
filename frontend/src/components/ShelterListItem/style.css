@@ -1,0 +1,11 @@
+#profile-pic {
+    overflow: clip;
+    vertical-align: middle;
+}
+
+#circle-container {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+}
