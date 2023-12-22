@@ -4,10 +4,6 @@ export type AuthUser = {
   email: string;
   avatar: string;
   phone_number: string;
-  notificationPreferences: {
-    email: boolean;
-    sms: boolean;
-  }
   password: string;
 };
 

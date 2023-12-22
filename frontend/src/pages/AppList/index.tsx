@@ -58,7 +58,7 @@ function AppList(){
         console.log(status);
         console.log(sort_by);
         //ajax(`/applications/?page=${page}&status=${status}&sort_by=${sort_by}`, {method: "GET"})
-        ajax_or_login(`/applications/?page=${page}&status=${status}&sort_by=${sort_by}`, {method: "GET"}, navigate)
+        ajax(`/applications/?page=${page}&status=${status}&sort_by=${sort_by}`, {method: "GET"})
         .then(response => {
             if (response.ok){
                 return response.json();

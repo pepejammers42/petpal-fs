@@ -49,7 +49,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           location,
           preference,
           email,
-          notificationPreferences,
           password
         } = response.data;
         const seekerUserInfo: SeekerUser = {
@@ -60,12 +59,11 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           location,
           preference,
           email,
-          notificationPreferences,
           password
         };
         setUserInfo(seekerUserInfo);
       } else if (userType === "shelter") {
-        const { avatar, phone_number, shelter_name, address, description, email, notificationPreferences, password } =
+        const { avatar, phone_number, shelter_name, address, description, email, password } =
           response.data;
         const shelterUserInfo: ShelterUser = {
           avatar,
@@ -74,7 +72,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           address,
           description,
           email,
-          notificationPreferences,
           password
         };
         setUserInfo(shelterUserInfo);
