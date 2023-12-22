@@ -73,15 +73,16 @@ const PetForm = ({ submit_button_text, read_only, endpoint_add, method, onFormSu
   
       // Append all form data to the FormData object
       Object.entries(data).forEach(([key, value]) => {
-        if (key === 'avatar' && value[0]) {
+        if (key === 'avatar') {
           // If the key is 'avatar' (file) and there is a file selected
-          formData.append(key, value[0]);
+          if (value[0]) {formData.append(key, value[0]);} // 
+          else {formData.append(key, value);} // No file specified
         } else {
           formData.append(key, value);
         }
       });
   
-      const response = await axios[method]('http://127.0.0.1:8000/pet_listings'+endpoint_add, formData, {
+      await axios[method]('http://127.0.0.1:8000/pet_listings'+endpoint_add, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -155,7 +156,7 @@ const PetForm = ({ submit_button_text, read_only, endpoint_add, method, onFormSu
       {errors.special_needs && <><div></div><p className="text-red-500">{errors.special_needs.message}</p></>}
 
       {submit_button_text && (
-        <button type="submit" disabled={isSubmitting} className="bg-blue-500 disabled:bg-gray-500 py-2 rounded w-full col-span-full">
+        <button type="submit" disabled={isSubmitting} className="bg-blue-500 disabled:bg-gray-500 py-2 rounded w-full col-span-full hover:text-gray-100 active:scale-95 active:bg-blue-800">
           {submit_button_text}
         </button>
       )}
