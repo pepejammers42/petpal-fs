@@ -10,6 +10,7 @@ import AuthProvider from "./context/AuthProvider";
 import PetAdoption from "./pages/PetAdoption";
 import PetCreation from "./pages/PetCreation";
 import Search from "./pages/Search";
+import Notifications from "./pages/Notifications";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
               <Route path="/applications/pets/:petId/" element={<PetAdoption />} />
               <Route path="/pet_listings/" element={<PetCreation />} />
               <Route path="/search/" element={<Search />} />
+              <Route path="/notifications/" element={<Notifications />} />
 
             </Route>
           </Routes>
