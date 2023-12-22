@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useSearchParams } from "react-router-dom";
-import "tw-elements-react/dist/css/tw-elements-react.min.css";
 import { TECollapse } from "tw-elements-react";
 import axios from "../../api/axios";
 import SearchPagination from "../../components/SearchPagination";
@@ -33,11 +32,19 @@ const NotificationsPage: React.FC = () => {
 
     const [activeElement, setActiveElement] = useState("");
 
-    const handleClick = (value: string) => {
+    const handleClick = async (notification: Notification, value: string) => {
         if (value === activeElement) {
+            // Close
             setActiveElement("");
         } else {
+            // Open
             setActiveElement(value);
+
+            // Set is_read, if the item isn't read
+            if (!notification.is_read) {
+                notifications[Number(value)].is_read = true;
+                await updateNotification(notification.id)
+            }
         }
     };
 
@@ -77,6 +84,22 @@ const NotificationsPage: React.FC = () => {
         }
     }
 
+    const updateNotification = async (id: number) => {
+        try {
+            const response = await axios.put(
+                `/notifications/${id}/`,
+                {
+                    is_read: true,
+                }
+            );
+            setNotifications(response.data.results)
+            setError(null);
+        } catch (err) {
+            setError("Failed to update notification.");
+            console.error(err);
+        }
+    }
+
     useEffect(() => {
         setIsLoading(true);
         fetchNotifications();
@@ -98,25 +121,25 @@ const NotificationsPage: React.FC = () => {
             <h1 className="text-2xl text-fg-primary p-4 text-center">Notifications</h1>
             <div id="accordionExample">
                 {notifications?.map((notification, idx) => (
-                    <div className="rounded-t-lg border border-neutral-200 bg-white dark:border-neutral-600 dark:bg-neutral-800">
+                    <div className="rounded-t-lg border border-neutral-200 bg-white" key={idx}>
                         <h2 className="mb-0" id="headingOne">
                             <button
-                                className={`${activeElement === `element${idx}` &&
+                                className={`${activeElement === `${idx}` &&
                                     `text-primary [box-shadow:inset_0_-1px_0_rgba(229,231,235)] dark:!text-primary-400 dark:[box-shadow:inset_0_-1px_0_rgba(75,85,99)]`
                                     } group relative flex w-full items-center rounded-t-[15px] border-0 bg-white px-5 py-4 text-left text-base text-neutral-800 transition [overflow-anchor:none] hover:z-[2] focus:z-[3] focus:outline-none dark:bg-neutral-800 dark:text-white`}
                                 type="button"
-                                onClick={() => handleClick(`element${idx}`)}
+                                onClick={() => handleClick(notification, `${idx}`)}
                                 aria-expanded="true"
                                 aria-controls="collapseOne"
                             >
-                                Notification #{idx + 1} - {notification.notification_type}
+                                <span><small className={`${notification.is_read ? "hidden" : "text-red-600"}`}>NEW</small>  Notification #{idx + 1} - {notification.notification_type}</span>
 
                                 <div className="ml-auto flex">
                                     <span className="mr-4">
                                         {format(notification.creation_time, 'dd/MM/yyyy')}
                                     </span>
                                     <span
-                                        className={`${activeElement === `element${idx}`
+                                        className={`${activeElement === `${idx}`
                                             ? `rotate-[-180deg]`
                                             : `rotate-0 fill-[#212529]  dark:fill-white`
                                             } h-5 w-5 shrink-0 fill-[#336dec] transition-transform duration-200 ease-in-out motion-reduce:transition-none dark:fill-blue-300`}
@@ -141,7 +164,7 @@ const NotificationsPage: React.FC = () => {
                             </button>
                         </h2>
                         <TECollapse
-                            show={activeElement === `element${idx}`}
+                            show={activeElement === `${idx}`}
                             className="!mt-0 !rounded-b-none !shadow-none"
                         >
                             <div className="px-5 py-4">
