@@ -10,26 +10,50 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ValidationError
 from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework.pagination import PageNumberPagination
 
+LISTING_PAGINATION_SIZE = 6 # Number of results to display per page (by default)
+LISTING_PAGINATION_SIZE_MAX = 9 # Maximum number of results to display per page
+LISTING_PAGINATION_SIZE_PARAM = 'page_size' # Query parameter to read page size from
+
+class ApplicationListPagination(PageNumberPagination):
+    page_size = LISTING_PAGINATION_SIZE  # Number of results to display per page (by default)
+    max_page_size = LISTING_PAGINATION_SIZE_MAX # Maximum number of results to display per page
+    page_size_query_param = LISTING_PAGINATION_SIZE_PARAM # Query parameter to read page size from
 
 class ApplicationCreate(ListCreateAPIView):
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = ApplicationListPagination
 
     def get(self, request, *args, **kwargs):
         """
             Get a list of applications for the logged in Seeker.
         """
+        try:
+            _ = self.request.user.seeker
+        except Seeker.DoesNotExist:
+            raise ValidationError({'detail': 'User must be a Seeker to create an application.'})
+        
         return super().get(request, *args, **kwargs)
+    
     def post(self, request, *args, **kwargs):
         """
             Create a brand new application with the logged in Seeker to the pet.
         """
+        try:
+            _ = self.request.user.seeker
+        except Seeker.DoesNotExist:
+            raise ValidationError({'detail': 'User must be a Seeker to create an application.'})
         return super().post(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         pet = get_object_or_404(PetListing, id=self.kwargs['pk'])
+
+        existing_application = Application.objects.filter(applicant=self.request.user, pet_listing=pet).exists()
+        if existing_application:
+            raise ValidationError({'detail': 'You already have an application for this pet.'})
 
         if pet.status != 'available':
             raise ValidationError({'detail': 'Pet is not available for application.'})
@@ -58,13 +82,14 @@ class ApplicationCreate(ListCreateAPIView):
             if self.request.user.seeker:
                 return Application.objects.filter(applicant=user)
         except Seeker.DoesNotExist:
-            raise ValidationError({'detail': "You do not have permission to access this resource."})
+            raise ValidationError({'detail': "User must be a Seeker to create an application."})
 
 
 class ApplicationRetrieveUpdate(RetrieveUpdateAPIView):
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = ApplicationListPagination
     
 
     @swagger_auto_schema(auto_schema=None)
@@ -120,6 +145,7 @@ class ApplicationRetrieveUpdate(RetrieveUpdateAPIView):
 class ShelterApplicationList(ListAPIView):
     serializer_class = ApplicationSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = ApplicationListPagination
 
     def get(self, request, *args, **kwargs):
         """
@@ -129,12 +155,20 @@ class ShelterApplicationList(ListAPIView):
 
     def get_queryset(self):
 
-        try:
-            _ = self.request.user.shelter
-        except Shelter.DoesNotExist:
-            raise ValidationError({'detail': 'User must be a Shelter to see applications.'})
+        queryset = {}
 
-        queryset = Application.objects.filter(pet_listing__shelter=self.request.user.shelter)
+        try:
+            shelter_user = self.request.user.shelter
+            queryset = Application.objects.filter(pet_listing__shelter=shelter_user)
+        except Shelter.DoesNotExist:
+            try:
+                seeker_user = self.request.user.seeker
+                queryset = Application.objects.filter(applicant=seeker_user)
+            except Seeker.DoesNotExist:
+                raise ValidationError({'detail': 'Unauthorized user.'})
+            #raise ValidationError({'detail': 'User must be a Shelter to see applications.'})
+
+        #queryset = Application.objects.filter(pet_listing__shelter=self.request.user.shelter)
 
         status = self.request.query_params.get('status')
         if status is not None and status != '':
