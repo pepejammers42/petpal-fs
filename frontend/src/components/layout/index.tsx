@@ -131,10 +131,10 @@ const Layout = () => {
                           </Link>
                         </>
                       ) : localStorage.getItem("user") === "shelter" ? (
-                        // Render for Shelter
+                        // Render for Shelter 
                         <>
                           <Link
-                            to="/my-shelter"
+                            to={`/shelter-management/${localStorage.getItem("userID")}`}
                             className="px-6 py-4 hover:py-5 hover:text-fg-alt-3 hover:bg-primary-100"
                           >
                             My Shelter Page
