@@ -31,9 +31,6 @@ type AuthContextType = {
   user: UserInfo | null;
   login: (credentials: LoginCredentialsType) => Promise<void>;
   logout: () => void;
-  updateUserPassword: (passwordData: any) => Promise<void>;
-  updateNotificationPreferences: (notificationData: any) => void;
-
 };
 
 type LoginCredentialsType = {

@@ -107,43 +107,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     setUserInfo(null);
   };
 
-  const updateUserPassword = async (passwordData: any) => {
-    try {
-      let userType = localStorage.getItem("user");
-      const userID = localStorage.getItem("userID");
-
-      if (!userType || !userID) {
-        // Handle the case where userType or userID is not available
-        return;
-      }
-      const response = await axios.put(`/accounts/${userType}/${userID}/`, passwordData);
-      if(response.status === 200){
-        await fetchUserInfo();
-      } else {
-        console.error("Error updating user password:", response.statusText);
-      }
-    } catch (error){
-      console.error("Error updating user password2:", error);
-    }
-  };
-
-  const updateNotificationPreferences = (notificationData: any) => {
-    // Update the user information locally without making an API call
-    setUserInfo((prevUserInfo) => {
-      if (!prevUserInfo) return null;
-  
-      return {
-        ...prevUserInfo,
-        notificationPreferences: {
-          email: notificationData.email,
-          sms: notificationData.sms,
-        }
-      };
-    });
-  };
-
   return (
-    <AuthContext.Provider value={{ token, user: userInfo, login, logout, updateUserPassword, updateNotificationPreferences }}>
+    <AuthContext.Provider value={{ token, user: userInfo, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

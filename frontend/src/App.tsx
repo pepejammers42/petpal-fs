@@ -12,7 +12,6 @@ import PetCreation from "./pages/PetCreation";
 import AppList from "./pages/AppList";
 import Application from "./pages/Application";
 import UserProfile from "./pages/UserProfile";
-import AccountSettings from "./pages/AccountSettings";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -33,7 +32,6 @@ function App() {
               <Route path="/applications/:appId/" element={<Application />} />
               <Route path="/pet_listings/" element={<PetCreation />} />
               <Route path="/profile" element={<UserProfile />} />
-              <Route path="/account-settings" element={<AccountSettings />}/>
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
