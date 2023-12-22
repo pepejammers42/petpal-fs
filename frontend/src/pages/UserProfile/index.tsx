@@ -163,7 +163,7 @@ const UserProfile = () => {
           Object.entries(seekerFormData).forEach(([key, value]) => {
             if (key === 'avatar' && isUploaded ){
               formData.append(key, uploadedFile || user?.avatar || "" );
-            } else if (key !== 'avatar'){
+            } else if (key !== 'avatar' && key !== 'password' && key !== 'confirm_password'){
               formData.append(key, value);
             }
           });
@@ -171,7 +171,7 @@ const UserProfile = () => {
           Object.entries(shelterFormData).forEach(([key, value]) => {
             if (key === 'avatar' && isUploaded){
               formData.append(key, uploadedFile || user?.avatar || "" );
-            } else if (key !== 'avatar'){
+            } else if (key !== 'avatar' && key !== 'password' && key !== 'confirm_password'){
               formData.append(key, value);
             }
           });
@@ -239,6 +239,7 @@ const UserProfile = () => {
             value={seekerFormData.first_name}
             onChange={(e) => setSeekerFormData({...seekerFormData, first_name: e.target.value})}
             disabled={!isEditing}
+            required
           />
           </div>
           <div className="flex flex-row gap-2">
@@ -250,6 +251,7 @@ const UserProfile = () => {
               value={seekerFormData.last_name}
               onChange={(e) => setSeekerFormData({...seekerFormData, last_name: e.target.value})}
               disabled={!isEditing}
+              required
             />
             </div>
           <div className="flex flex-row gap-2">
@@ -261,6 +263,7 @@ const UserProfile = () => {
           value={seekerFormData.email}
           onChange={(e) => setSeekerFormData({...seekerFormData, email: e.target.value})}
           disabled={!isEditing}
+          required
           />
           </div>
           <div className="flex flex-row gap-2">
@@ -298,10 +301,10 @@ const UserProfile = () => {
         </div>
         </div>
 
-          {isEditing ? 
-          <div className="pt-8">
-          <label >Type your current password: </label>
-          <input onChange={(e)=>setSeekerFormData({...seekerFormData, password:e.target.value, confirm_password:e.target.value})} className="pl-4 border rounded border-blue-500" required/>
+        {isEditing ? 
+          <div className="pt-8 flex flex-row gap-2 justify-center">
+          <label >Confirm change: </label>
+          <input type="checkbox" required/>
           
           </div>
           :
@@ -357,6 +360,7 @@ const UserProfile = () => {
             value={shelterFormData.shelter_name}
             onChange={(e) => setShelterFormData({...shelterFormData, shelter_name: e.target.value})}
             disabled={!isEditing}
+            required
           />
           </div>
           <div className="flex flex-row gap-2">
@@ -368,6 +372,7 @@ const UserProfile = () => {
           value={shelterFormData.email}
           onChange={(e) => setShelterFormData({...shelterFormData, email: e.target.value})}
           disabled={!isEditing}
+          required
           />
           </div>
           <div className="flex flex-row gap-2">
@@ -390,6 +395,7 @@ const UserProfile = () => {
             value={shelterFormData.address}
             onChange={(e) => setShelterFormData({...shelterFormData, address: e.target.value})}
             disabled={!isEditing}
+            required
           />
           </div>
           <div className="flex flex-col gap-2 pt-4">
@@ -406,9 +412,9 @@ const UserProfile = () => {
         </div>
 
           {isEditing ? 
-          <div className="pt-8">
-          <label >Type your current password: </label>
-          <input onChange={(e)=>setShelterFormData({...shelterFormData, password:e.target.value, confirm_password:e.target.value})} className="pl-4 border rounded border-blue-500" required/>
+          <div className="pt-8 flex flex-row gap-2 justify-center">
+          <label >Confirm change: </label>
+          <input type="checkbox" required/>
           
           </div>
           :
@@ -483,5 +489,4 @@ const UserProfile = () => {
 };
 
 export default UserProfile;
-
 
