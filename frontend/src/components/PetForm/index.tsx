@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "../../api/axios";
 import { useForm } from "react-hook-form";
-import type { FieldValues, SubmitHandler } from "react-hook-form";
+import type { SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { useEffect } from "react";
 
@@ -39,13 +39,7 @@ const PetForm = ({ submitButtonText = "", read_only=false, pet }: PetFormProps) 
     medical_history: z.string().nullable(),
     behavior: z.string().nullable(),
     special_needs: z.string().nullable(),
-    // This took so long to get working :)))
     avatar: z.any()
-    // avatar: z.any().refine((data: FileList | null) => {
-    //   if (data && data.length > 0) {return true;}
-    //   return false;
-    // }, 
-    // {message: "Please upload an avatar image."}),
   });
   type ValidationSchemaType = z.infer<typeof schema>
 

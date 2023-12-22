@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useState } from 'react';
 import PetForm from '../../components/PetForm';
 
 function PetCreation(){
