@@ -166,12 +166,12 @@ const Layout = () => {
                           >
                             Pets
                           </Link>
-                          <Link
+                          {/* <Link
                             to="/search"
                             className="px-6 py-4 hover:py-5 hover:text-fg-alt-3 hover:bg-primary-100"
                           >
                             Explore
-                          </Link>
+                          </Link> */}
                         </>
                       )}
                     </div>
@@ -289,12 +289,12 @@ const Layout = () => {
                   >
                     Pets
                   </Link>
-                  <Link
+                  {/* <Link
                     to="/explore"
                     className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
                   >
                     Explore
-                  </Link>
+                  </Link> */}
                 </>
               )}
             </div>

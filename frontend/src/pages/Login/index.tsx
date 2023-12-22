@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import type { FieldValues } from "react-hook-form";
 import { z } from "zod";
 import { useAuth } from "../../hooks/useAuth";
+import { useNavigate, Link } from 'react-router-dom';
+
 
 const schema = z.object({
   email: z.string().email(),
@@ -12,6 +14,7 @@ const schema = z.object({
 
 const Login = () => {
   const { login } = useAuth();
+  const navigate = useNavigate();
   const [loginError, setLoginError] = useState(""); // Add a state for login error
   const {
     register,
@@ -31,6 +34,7 @@ const Login = () => {
       setLoginError(errorResponse.message);
     } else {
       setLoginError("");
+      navigate('/', { replace: true });
     }
     reset();
   };

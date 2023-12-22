@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import axios from "../../api/axios";
 import { DropDown, DropdownProvider } from '../../components/DropDown';
 import { Icon } from '@iconify/react';
@@ -203,14 +203,14 @@ const Search: React.FC = () => {
 
             <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8 my-4 mr-4">
               {pets?.map(pet => (
-                <a href={`/pet_listings/${pet.id}`} className="mx-auto flex w-65 flex-col justify-center bg-white rounded-2xl shadow-xl shadow-box-shadow">
+                <Link to={`/pet_listings/${pet.id}`} className="mx-auto flex w-65 flex-col justify-center bg-white rounded-2xl shadow-xl shadow-box-shadow">
                   <img className="aspect-video w-100 rounded-t-2xl object-cover object-center" src={pet.avatar ?? "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/800px-Image_not_available.png?20210219185637"} />
                   <div className="p-4">
                     
                     <h1 className="text-2xl font-medium text-fg-accent pb-2">{pet.name}</h1>
                     <small className="text-s">{pet.age}-year-old {pet.gender} {pet.breed}</small>
                   </div>
-                </a>
+                </Link>
               ))}
             </div>
 

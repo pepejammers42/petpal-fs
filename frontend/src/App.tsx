@@ -28,7 +28,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Layout />}>
-              <Route index element={<Home />} />
+              <Route index element={<Search />} />
               <Route path="/shelter" element={<Shelter />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
@@ -38,7 +38,7 @@ function App() {
               <Route path="/applications/" element={<AppList />} />
               <Route path="/applications/:appId/" element={<Application />} />
               <Route path="/pet_listings/" element={<PetCreation />} />
-              <Route path="/search/" element={<Search />} />
+              {/* <Route path="/search/" element={<Search />} /> */}
               <Route element={<PrivateRoute />}>
                 <Route path="/notifications/" element={<Notifications />} />
               </Route>
