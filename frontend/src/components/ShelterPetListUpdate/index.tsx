@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import axios from "../../api/axios";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import { ajax, ajax_loggedout } from '../../ajax' ;
 
 type PetType = {
@@ -72,16 +72,16 @@ const ShelterPetListUpdate = ({sname}:{sname:string}) => {
                 <div >
                     <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8 my-4 mr-4 ">
                     {pets?.map(pet => (
-                      <a href={`/pet_listings/${pet.id}`} key={"pet" + pet.id} className="mx-auto flex w-65 flex-col justify-center bg-white rounded-2xl shadow-xl shadow-box-shadow">
+                      <Link to={`/pet_listings/${pet.id}`} key={"pet" + pet.id} className="mx-auto flex w-65 flex-col justify-center bg-white rounded-2xl shadow-xl shadow-box-shadow">
                         <img className="aspect-video w-100 rounded-t-2xl object-cover object-center" src={pet.avatar ?? "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/800px-Image_not_available.png?20210219185637"} />
                         <div className="p-4">
 
                           <h1 className="text-2xl font-medium text-fg-accent pb-2">{pet.name}</h1>
                           <small className="text-s">{pet.age}-year-old {pet.gender} {pet.breed}</small>
                         </div>
-                      </a>
+                      </Link>
                     ))}
-                    <a href={`/pet_listings/`} className="flex h-52 w-65 justify-center bg-white rounded-2xl shadow-xl shadow-box-shadow align-middle relative">
+                    <Link to={`/pet_listings/`} className="flex h-52 w-65 justify-center bg-white rounded-2xl shadow-xl shadow-box-shadow align-middle relative">
                     <svg
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 width="100"
@@ -92,7 +92,7 @@ const ShelterPetListUpdate = ({sname}:{sname:string}) => {
                                                 <path
                                                     d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                             </svg>
-                      </a>
+                      </Link>
                     </div>
                     <div className='pt-8 flex justify-center'>
                             {query.page===1? <button className="mt-4 bg-gray-500 text-white p-2 rounded" onClick={() => handlePageChange(query.page - 1)} disabled={true}>Prev</button> :<button className="mt-4 bg-blue-500 text-white p-2 rounded" onClick={() => handlePageChange(query.page - 1)} disabled={query.page === 1}>Prev</button>}
