@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { ajax, ajax_or_login } from '../../ajax';
+import { ajax, ajax_or_login, ajax_loggedout } from '../../ajax';
 import { useAuth } from "../../hooks/useAuth";
 
 
@@ -60,7 +60,7 @@ const ShelterReview = () => {
 
   const fetchComments = () => {
     const {page} = query;
-    ajax(`/comments/shelters/${shelterId}/all/?page=${page}`, { method: 'GET' })
+    ajax_loggedout(`/comments/shelters/${shelterId}/all/?page=${page}`, { method: 'GET' })
       .then(response => {
         if (response.ok) {
           return response.json();
