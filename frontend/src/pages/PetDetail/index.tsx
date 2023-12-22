@@ -5,20 +5,8 @@ import axios from "../../api/axios";
 
 const PetDetail = () => {
     const { pk } = useParams();
-    const [petDetails, setPetDetails] = useState({
-        name: "",
-        description: "",
-        status: "",
-        breed: "",
-        age: 0,
-        size: "",
-        color: "",
-        gender: "",
-        medical_history: "",
-        behavior: "",
-        special_needs: "",
-        avatar: "",
-    });
+    const emptypet = { name: "", description: "", status: "", breed: "", age: 0, size: "", color: "", gender: "", medical_history: "", behavior: "", special_needs: "", avatar: "" };
+    const [petDetails, setPetDetails] = useState(emptypet);
     
 
     const fetchData = async () => {
@@ -50,8 +38,12 @@ const PetDetail = () => {
             <div className="p-4 bg-white">
                 <img className="mx-auto w-full rounded-lg border-2 border-green-500 mb-2" alt="profile icon" src={petDetails.avatar}/>
                 
-                {Object.keys(petDetails).length > 0 && (
-                    <PetForm submitButtonText="Update this pet!" pet={petDetails} />
+                {Object.keys(petDetails).length > 0 && localStorage.getItem("user") === "shelter" && (
+                    <PetForm submitButtonText="Update this pet!" read_only={false} pet={petDetails} />
+                )}
+                
+                {Object.keys(petDetails).length > 0 && localStorage.getItem("user") === "seeker" && (
+                    <PetForm submitButtonText="" read_only={true} pet={petDetails} />
                 )}
             </div>
         </div>
