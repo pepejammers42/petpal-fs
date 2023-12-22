@@ -41,8 +41,8 @@ function App() {
               <Route path="/applications/:appId/" element={<Application />} />
               <Route path="/pet_listings/" element={<PetCreation />} />
               {/* <Route path="/search/" element={<Search />} /> */}
-              <Route path="/pet_listings/:pk" element={<PetDetail />} />
               <Route element={<PrivateRoute />}>
+                <Route path="/pet_listings/:pk" element={<PetDetail />} />
                 <Route path="/notifications/" element={<Notifications />} />
               </Route>
               <Route path="/profile" element={<UserProfile />} />
