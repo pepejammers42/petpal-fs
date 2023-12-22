@@ -211,8 +211,8 @@ const UserProfile = () => {
         <div className="flex flex-row justify-around">
         <div id="profile-photo" className="flex flex-col gap-2">
           <h2 className="text-xl font-bold pb-2">Profile Photo</h2>
-          <div id="circle-container">
-            <img id="profile-pic"  alt="profile icon" src={uploadedImage?.toString() || user?.avatar || userAvatar}/>       
+          <div id="circle-container-up">
+            <img id="profile-pic-up"  alt="profile icon" src={uploadedImage?.toString() || user?.avatar || userAvatar}/>       
           </div>
           
           {isEditing ?

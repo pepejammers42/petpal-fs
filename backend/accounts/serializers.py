@@ -25,8 +25,9 @@ class ShelterSerializer(ModelSerializer):
         ]
 
     def validate(self, data):
-        if data["password"] != data["confirm_password"]:
-            raise serializers.ValidationError({"Error": "Passwords must match."})
+        if "password" in data:
+            if data["password"] != data["confirm_password"]:
+                raise serializers.ValidationError({"Error": "Passwords must match."})
         return data
 
     def create(self, validated_data):
@@ -70,8 +71,9 @@ class SeekerSerializer(ModelSerializer):
         ]
 
     def validate(self, data):
-        if data["password"] != data["confirm_password"]:
-            raise serializers.ValidationError({"Error": "Passwords must match."})
+        if "password" in data:
+            if data["password"] != data["confirm_password"]:
+                raise serializers.ValidationError({"Error": "Passwords must match."})
         return data
 
     def create(self, validated_data):
