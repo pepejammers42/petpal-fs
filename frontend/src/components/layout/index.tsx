@@ -52,7 +52,7 @@ const Layout = () => {
   }, [iconRef, profileRef]);
   const Dropdown = () => (
     <div
-      className="absolute right-0 top-7 mt-10 py-2 w-48 bg-white rounded-md shadow-xl z-50"
+      className="absolute right-0 top-2 md:top-10 mt-10 py-2 w-48 bg-white rounded-md shadow-xl z-50"
       ref={profileRef}
     >
       <Link
@@ -89,7 +89,7 @@ const Layout = () => {
           <div
             className={`${flexBetween} fixed top-0 z-30 w-full bg-gradient-header h-12 md:h-20 px-4`}
           >
-            <div className={`${flexBetween} mx-auto w-[1194px]`}>
+            <div className={`${flexBetween} mx-auto w-full`}>
               <div className={`${flexBetween} w-full md:gap-16`}>
                 <div className={`${flexBetween} gap-2 md:gap-6`}>
                   <div className={`${flexBetween} gap-2`}>
@@ -225,10 +225,78 @@ const Layout = () => {
               className="fixed left-0 bottom-0 z-40 h-full w-[180px] bg-gradient-header drop-shadow-xl text-fg-alt-3 flex flex-col gap-10 text-xl pt-8 pl-4 "
               ref={menuRef}
             >
-              <p>Home</p>
-              <p>Shelter</p>
-              <p>Pets</p>
-              <p>Explore</p>
+              {localStorage.getItem("user") === "seeker" ? (
+                // Render for Seeker
+                <>
+                  <Link
+                    to="/"
+                    className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    to="/shelter"
+                    className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
+                  >
+                    Shelters
+                  </Link>
+                  <Link
+                    to="/pets"
+                    className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
+                  >
+                    Pets
+                  </Link>
+                  <Link
+                    to="/favorites"
+                    className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
+                  >
+                    Favorites
+                  </Link>
+                </>
+              ) : localStorage.getItem("user") === "shelter" ? (
+                // Render for Shelter
+                <>
+                  <Link
+                    to="/my-shelter"
+                    className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
+                  >
+                    My Shelter Page
+                  </Link>
+                  <Link
+                    to="/list-pet"
+                    className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
+                  >
+                    List a New Pet
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/"
+                    className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    to="/shelter"
+                    className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
+                  >
+                    Shelter
+                  </Link>
+                  <Link
+                    to="/pets"
+                    className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
+                  >
+                    Pets
+                  </Link>
+                  <Link
+                    to="/explore"
+                    className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
+                  >
+                    Explore
+                  </Link>
+                </>
+              )}
             </div>
           )}
         </nav>

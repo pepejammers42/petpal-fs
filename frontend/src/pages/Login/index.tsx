@@ -36,7 +36,7 @@ const Login = () => {
   };
 
   return (
-    <div className="w-1/5 mx-auto pt-10">
+    <div className="w-1/5 mx-auto pt-10 min-w-fit">
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-2">
         <input
           {...register("email")}

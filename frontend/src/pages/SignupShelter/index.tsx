@@ -75,7 +75,7 @@ function SignupShelter() {
   };
 
   return (
-    <div className="w-1/5 mx-auto gap-2">
+    <div className="w-1/5 mx-auto gap-2 min-w-fit">
       <h2 className="font-noto text-4xl font-medium pt-10">Pet Shelter</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-2">
         <label className="flex flex-col">
