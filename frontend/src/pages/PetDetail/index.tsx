@@ -23,6 +23,10 @@ const PetDetail = () => {
         }
     };
 
+    const handleFormSubmit = async () => {
+        fetchData();
+    };
+
     useEffect(() => {
         fetchData();
     }, []);
@@ -36,11 +40,11 @@ const PetDetail = () => {
                 <img className="mx-auto w-full rounded-lg border-2 border-green-500 mb-2" alt="profile icon" src={petDetails.avatar ?? "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/800px-Image_not_available.png?20210219185637" }/>
                 
                 {Object.keys(petDetails).length > 0 && localStorage.getItem("user") === "shelter" && (
-                    <PetForm submitButtonText="Update this pet!" read_only={false} pet={petDetails} />
+                    <PetForm submitButtonText="Update this pet!" read_only={false} pet_id_extension={"/"+pk+"/"} onFormSubmit={handleFormSubmit} pet={petDetails} />
                 )}
                 
                 {Object.keys(petDetails).length > 0 && localStorage.getItem("user") === "seeker" && (
-                    <PetForm submitButtonText="" read_only={true} pet={petDetails} />
+                    <PetForm submitButtonText="" read_only={true} pet_id_extension={"/"+pk+"/"} onFormSubmit={handleFormSubmit} pet={petDetails} />
                 )}
             </div>
         </div>

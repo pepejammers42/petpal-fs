@@ -23,7 +23,7 @@ function PetCreation(){
                 <h1 className="font-bold text-2xl">Pet Creation Page </h1>
             </div>
             <div className="p-4 bg-white">
-                <PetForm submitButtonText="Update this pet!" read_only={false} pet={petDetails} />
+                <PetForm submitButtonText="Update this pet!" read_only={false} pet_id_extension={""} onFormSubmit={() => {}} pet={petDetails} />
             </div>
         </div>
     </>

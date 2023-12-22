@@ -23,10 +23,12 @@ interface Pet {
 interface PetFormProps {
   submitButtonText: string;
   read_only: boolean;
+  pet_id_extension: string;
+  onFormSubmit: () => void; // Callback function type
   pet: Pet;
 }
 
-const PetForm = ({ submitButtonText = "", read_only=false, pet }: PetFormProps) => {
+const PetForm = ({ submitButtonText, read_only, pet_id_extension, onFormSubmit, pet }: PetFormProps) => {
   const schema = z.object({
     name: z.string().min(1).max(20),
     description: z.string(),
@@ -78,15 +80,14 @@ const PetForm = ({ submitButtonText = "", read_only=false, pet }: PetFormProps) 
         }
       });
   
-      const response = await axios.put('http://127.0.0.1:8000/pet_listings/1/', formData, {
+      const response = await axios.put('http://127.0.0.1:8000/pet_listings'+pet_id_extension, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
   
-      console.log('Pet listing created successfully:', response.data);
+      onFormSubmit();
     } catch (error: any) {
-      console.error('Error creating pet listing:', error.message);
     }
   };
 
