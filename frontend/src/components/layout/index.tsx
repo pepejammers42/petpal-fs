@@ -188,7 +188,7 @@ const Layout = () => {
                   {user ? (
                     // Render for logged in user
                     <>
-                      <BellIcon className="h-6 w-6 text-fg-alt-3" />{" "}
+                      <Link to="/notifications/"> <BellIcon className="h-6 w-6 text-fg-alt-3" />{" "}</Link>
                       {/* Bell icon */}
                       <img
                         className="h-10 md:h-14 rounded-full"
