@@ -2,41 +2,93 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import type { FieldValues } from "react-hook-form";
 import { z } from "zod";
-type Props = {};
+import axios from "../../api/axios";
 
 const schema = z
   .object({
     email: z.string().email(),
+    firstName: z.string().min(1, "First name is required"),
+    lastName: z.string().min(1, "Last name is required"),
+    phoneNumber: z.string().optional(),
+    preference: z.string().optional(),
+    location: z.string().optional(),
     password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z
       .string()
       .min(8, "Password must be at least 8 characters"),
+    avatar: z.any().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
   });
 
-function SignupSeeker(props: Props) {
+function SignupSeeker() {
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors, isSubmitting },
     reset,
   } = useForm({
     resolver: zodResolver(schema),
   });
+  const avatar = watch("avatar");
 
   const onSubmit = async (data: FieldValues) => {
-    // TODO: send to server
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    console.log("Form Data:", data.avatar);
+
+    const formData = new FormData();
+    formData.append("email", data.email);
+    formData.append("first_name", data.firstName);
+    formData.append("last_name", data.lastName);
+    formData.append("confirm_password", data.confirmPassword);
+
+    if (data.phoneNumber) formData.append("phoneNumber", data.phoneNumber);
+    if (data.preference) formData.append("preference", data.preference);
+    if (data.location) formData.append("location", data.location);
+
+    formData.append("password", data.password);
+
+    if (data.avatar) formData.append("avatar", data.avatar);
+
+    try {
+      const response = await axios.post("/accounts/seeker/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      console.log("Success:", response.data);
+    } catch (error) {
+      console.log("smth went wrong");
+    }
     reset();
   };
+
+  // Custom handler for file input
+  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    console.log("Files:", files);
+    if (files) {
+      setValue("avatar", files[0]);
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-2">
       <input {...register("email")} type="email" placeholder="Email" />
       {errors.email && (
         <p className="text-red-500">{`${errors.email.message}`}</p>
+      )}
+      <input {...register("firstName")} placeholder="First Name" />
+      {errors.firstName && (
+        <p className="text-red-500">{`${errors.firstName.message}`}</p>
+      )}
+      <input {...register("lastName")} placeholder="Last Name" />
+      {errors.lastName && (
+        <p className="text-red-500">{`${errors.lastName.message}`}</p>
       )}
 
       <input {...register("password")} placeholder="Password" type="password" />
@@ -51,6 +103,23 @@ function SignupSeeker(props: Props) {
       {errors.confirmPassword && (
         <p className="text-red-500">{`${errors.confirmPassword.message}`}</p>
       )}
+      <input {...register("phoneNumber")} placeholder="Phone Number" />
+      {errors.phoneNumber && (
+        <p className="text-red-500">{`${errors.phoneNumber.message}`}</p>
+      )}
+
+      <input {...register("preference")} placeholder="Preference" />
+      {errors.preference && (
+        <p className="text-red-500">{`${errors.preference.message}`}</p>
+      )}
+
+      <input {...register("location")} placeholder="Location" />
+      {errors.location && (
+        <p className="text-red-500">{`${errors.location.message}`}</p>
+      )}
+      <input type="file" onChange={onFileChange} />
+      {avatar && <p>File: {avatar.name}</p>}
+
       <button
         type="submit"
         disabled={isSubmitting}

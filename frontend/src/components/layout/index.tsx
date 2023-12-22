@@ -5,15 +5,13 @@ import { useState, useEffect, useRef } from "react";
 import { ChevronDoubleDownIcon, BellIcon } from "@heroicons/react/24/solid";
 import { Outlet, Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-type Props = {};
 
 // TODO: responsive design (scaling elements)
 // TODO: css design update
 // TODO: add transition on menu page (responsive)
 // TODO: fix paragraphs with proper links
-// TODO: add one more navbar for the logged in user
 
-const Layout = (props: Props) => {
+const Layout = () => {
   const flexBetween = "flex justify-between items-center";
   const isAboveMedium = useMediaQuery("(min-width: 1060px)");
   const [isOpen, setIsOpen] = useState(false);
