@@ -17,6 +17,7 @@ import UserProfile from "./pages/UserProfile";
 import NotFound from "./pages/NotFound";
 import ShelterDetail from "./pages/ShelterDetail";
 import ShelterManagement from "./pages/ShelterManagement";
+import PetDetail from "./pages/PetDetail";
 
 function PrivateRoute () {
   return localStorage.getItem('user') ? <Outlet /> : <Navigate to="/login" replace />;
@@ -38,6 +39,7 @@ function App() {
               <Route path="/applications/" element={<AppList />} />
               <Route path="/applications/:appId/" element={<Application />} />
               <Route path="/pet_listings/" element={<PetCreation />} />
+              <Route path="/pet_listings/:pk" element={<PetDetail />} />
               <Route path="/search/" element={<Search />} />
               <Route element={<PrivateRoute />}>
                 <Route path="/notifications/" element={<Notifications />} />
