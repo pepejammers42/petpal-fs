@@ -25,7 +25,9 @@ const NotificationsPage: React.FC = () => {
             is_read: searchParams.get("is_read") ?? []
         }
 
-        temp.is_read = (temp.is_read == "read") ? "True" : "False"
+        if (!Array.isArray(temp.is_read)) {
+            temp.is_read = (temp.is_read == "Read") ? "True" : "False"
+        }
         return temp
     }
 
@@ -124,10 +126,9 @@ const NotificationsPage: React.FC = () => {
 
             {/* Filter section */}
             <div className="w-1/4">
-                <h1 className="mb-2 mt-4 text-2xl">Filter</h1>
                 <DropDown
                     data={statuses}
-                    category="Status"
+                    category="Read Status"
                     enableSearch={true}
                     value={searchParams.get("is_read") ?? "All"}
                     onChange={(value) => handleFilterChange("is_read", value)} />
@@ -150,12 +151,9 @@ const NotificationsPage: React.FC = () => {
                                     aria-expanded="true"
                                     aria-controls="collapseOne"
                                 >
-                                    <span><small className={`${notification.is_read ? "hidden" : "text-red-600"}`}>NEW</small>  Notification #{idx + 1} - {notification.notification_type}</span>
+                                    <span><small className={`${notification.is_read ? "hidden" : "text-red-600"}`}>NEW</small> [{format(notification.creation_time, 'dd/MM/yy')}] {notification.notification_type}</span>
 
                                     <div className="ml-auto flex">
-                                        <span className="mr-4">
-                                            {format(notification.creation_time, 'dd/MM/yyyy')}
-                                        </span>
                                         <span
                                             className={`${activeElement === `${idx}`
                                                 ? `rotate-[-180deg]`
