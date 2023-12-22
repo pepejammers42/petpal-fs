@@ -1,96 +1,131 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { ajax_or_login } from "../../ajax";
+import { ajax } from '../../ajax';
+
 
 interface Pet {
+    id: number;
+    shelter: number;
     name: string;
+    description: string;
+    status: string;
     breed: string;
     age: number;
-    shelter: {
-        shelter_name: string;
-        address: string;
-    }
+    size: string;
+    color: string;
+    gender: string;
+    avatar: string;
+    medical_history: string;
+    behavior: string;
+    special_needs: string;
 }
 
-function AppForm({pet, petId}: {pet: Pet, petId:number}) {
+function AppForm({petId}: {petId:number}) {
     const navigate = useNavigate();
-    const [error, setError] = useState("");
-    const [ app , setApp ] = useState({
-        pet_listing: { name: pet.name, 
-                       breed: pet.breed, 
-                       age: pet.age, 
-                       shelter: {
-                        shelter_name: pet.shelter.shelter_name,
-                        address: pet.shelter.address,
-                       }
-                    },
-        creation_time: "",
-        personal_statement: "",
+    const [fetchError, setFetchError] = useState("");
+    const [createError, setCreateError] = useState("");
+    const [success, setSuccess] = useState(false);
+    const [personalStmt, setPersonalStmt] = useState("");
+    const [ pet , setPet ] = useState({
+        "id": 0,
+        "shelter": 0,
+        "name": "",
+        "description": "",
+        "status": "",
+        "breed": "",
+        "age": 0,
+        "size": "",
+        "color": "",
+        "gender": "",
+        "avatar": "",
+        "medical_history": "",
+        "behavior": "",
+        "special_needs": ""
     });
 
-    function handle_submit(event: React.ChangeEvent<HTMLFormElement>){
-        let data = new FormData(event.target);
-
-        ajax_or_login(`/applications/pets/${petId}/`, {
-            method: "POST",
-            body: data,
-        }, navigate)
+    useEffect(()=> {
+        setCreateError("");
+        ajax_or_login(`/pet_listings/${petId}/`, { method: 'GET' }, navigate)
         .then(response => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw Error(response.statusText);
+          }
+        })
+        .then((json: Pet) => {
+          setPet(json)
+        })
+        .catch(error => setFetchError(error));
+    }, [petId]);
+
+
+    const handle_submit  = (e: React.FormEvent) => {
+        e.preventDefault();
+        ajax_or_login(`/applications/pets/${petId}/`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({personal_statement: personalStmt}),
+        }, navigate)
+        .then(async response => {
             if (response.ok) {
                 return response.json();
-            }
-            else{
-                throw Error(response.statusText);
+            } else {
+                const errorData = await response.json();
+                setCreateError(errorData.detail.toString());
+                console.log(errorData.detail.toString());
+                console.log(createError);
+                throw new Error(response.statusText);
             }
         })
-        .then(json => setApp(json))
-        .catch(error => {
-            setError(error.toString());
+        .then(json => {setPersonalStmt(json.personal_statement); setSuccess(true);})
+        .catch((error) => {
+             // Check if the error is a JSON response with a detail message
+            ;
+              
         });
 
-        event.preventDefault();
     }
 
     return <>
-        <div className="max-w-sm rounded overflow-hidden shadow-lg">
+        <div className="mx-auto max-w-3xl mt-8 p-4 rounded overflow-hidden shadow-lg bg-white">
             <div className="px-6 py-4">
             <Link
                 to={`pet_listings/${petId}/`}
                 className="font-bold text-xl mb-2">
                 <h1>
-                    {app.pet_listing.name},
+                    {pet.name},
                     <span className="text-gray-700 text-base">
-                        {" " + app.pet_listing.age + "yr old " + app.pet_listing.breed }
+                        {" " + pet.age + "yr old " + pet.breed }
                     </span>
                     <span
                         className="iconify"
                         data-icon="akar-icons:circle-chevron-right-fill"></span>
                 </h1>
-            </Link>
-            <Link
-                to="/src/pages/notification.html"
-                className="text-gray-700 text-base flex flex-col items-end">
-                <div>
-                <span
-                    className="iconify"
-                    data-icon="akar-icons:chat-dots"></span>
-                Chat with
-                <span className="user-name">{" "+app.pet_listing.shelter.shelter_name}</span>
-                </div>
+                <p className="error text-red-500">{fetchError.toString()}</p>
             </Link>
             </div>
             <div className="container p-4"> 
-            <form>
+            <form onSubmit={handle_submit}>
                 <div className="row">
                     <div className="mb-3 flex flex-col">
                         <label className="form-label"
                             >Personal Statement</label>
                         <textarea
-                            name=""
+                            name="personal_statement"
                             className="border"
                             id="ps"
                             rows={8}
-                            placeholder="Tell the shelter why you are interested in this pet and what you can provide to it!"></textarea>
+                            value={personalStmt}
+                            onChange={(e)=>
+                                setPersonalStmt(e.target.value)
+                            }
+                            placeholder="Tell the shelter why you are interested in this pet and what you can provide to it!">
+
+                        </textarea>
                     </div>
                 </div>
                 <div className="form-check m-auto">
@@ -111,13 +146,17 @@ function AppForm({pet, petId}: {pet: Pet, petId:number}) {
                 
                 <button
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4  rounded"
-                    type="submit">
+                    type="submit"
+                    >
                     Confirm My Information and Submit
                     Application
                 </button>
-                <p className="error">{error}</p>
+                <p className="error text-red-500">{createError}</p>
             </form>
             </div>
+            {success ? 
+            <p>Your application is submitted!</p>: 
+            ''}
         </div>
     </>
 }

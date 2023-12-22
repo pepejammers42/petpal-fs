@@ -3,9 +3,13 @@ from .models import Application
 from pet_listings.models import PetListing
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
+from pet_listings.serializers import PetListingSerializer
+from accounts.serializers import SeekerSerializer
 
 
 class ApplicationSerializer(ModelSerializer):
+    pet_listing = PetListingSerializer()
+    applicant = SeekerSerializer()
     
     class Meta:
         model = Application

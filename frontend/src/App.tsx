@@ -11,11 +11,16 @@ import PetAdoption from "./pages/PetAdoption";
 import PetCreation from "./pages/PetCreation";
 import Search from "./pages/Search";
 import Notifications from "./pages/Notifications";
+import AppList from "./pages/AppList";
+import Application from "./pages/Application";
+import UserProfile from "./pages/UserProfile";
+import NotFound from "./pages/NotFound";
+import ShelterDetail from "./pages/ShelterDetail";
+import ShelterManagement from "./pages/ShelterManagement";
 
 function PrivateRoute () {
   return localStorage.getItem('user') ? <Outlet /> : <Navigate to="/login" replace />;
 }
-
 function App() {
   return (
     <div>
@@ -30,12 +35,17 @@ function App() {
               <Route path="/signup-shelter" element={<SignupShelter />} />
               <Route path="/signup-seeker" element={<SignupSeeker />} />
               <Route path="/applications/pets/:petId/" element={<PetAdoption />} />
+              <Route path="/applications/" element={<AppList />} />
+              <Route path="/applications/:appId/" element={<Application />} />
               <Route path="/pet_listings/" element={<PetCreation />} />
               <Route path="/search/" element={<Search />} />
               <Route element={<PrivateRoute />}>
                 <Route path="/notifications/" element={<Notifications />} />
               </Route>
-
+              <Route path="/profile" element={<UserProfile />} />
+              <Route path="/shelter-detail/:shelterId/" element={<ShelterDetail />} />
+              <Route path="/shelter-management/:shelterId/" element={<ShelterManagement/>}/>
+              <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
         </BrowserRouter>
