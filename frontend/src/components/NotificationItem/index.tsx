@@ -2,6 +2,7 @@
 import moment from "moment";
 import axios from "../../api/axios";
 import { TECollapse } from "tw-elements-react";
+import { Link } from "react-router-dom";
 
 interface Notification {
   id: number;
@@ -137,7 +138,7 @@ const NotificationItem: React.FC<NotificationProps> = ({
       >
         <div className="px-5 py-4">
           {notification.message}
-
+          {/* {notification.notification_type=="pet_listing" && <Link to ></Link>} */}
           <br />
           <br />
 
