@@ -40,7 +40,8 @@ class ShelterCommentCreateView(generics.CreateAPIView):
 
 class ShelterCommentListView(generics.ListAPIView):
     serializer_class = CommentSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    #permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
     pagination_class = CommentPagination
     
     def get(self, request, *args, **kwargs):
