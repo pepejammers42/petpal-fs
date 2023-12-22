@@ -45,6 +45,7 @@ const NotificationsPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [activeElement, setActiveElement] = useState("");
+    const [maxCount, setMaxCount] = useState(0);
     const statuses = ["Read", "Unread"]
 
     const handleClick = async (notification: Notification, value: string) => {
@@ -90,6 +91,7 @@ const NotificationsPage: React.FC = () => {
             console.log(response)
 
             setNotifications(response.data.results)
+            setMaxCount(response.data.count)
             setError(null);
         } catch (err) {
             setError("Failed to fetch notifications.");
@@ -228,7 +230,7 @@ const NotificationsPage: React.FC = () => {
                 <SearchPagination
                     page={searchParams.get("page") ? Number(searchParams.get("page")) : 1}
                     pageSize={searchParams.get("page_size") ? Number(searchParams.get("page_size")) : 8}
-                    maxCount={10}
+                    maxCount={maxCount}
                     onChange={(value) => handleFilterChange("page", value.toString())} />
             </div>
         </div >
