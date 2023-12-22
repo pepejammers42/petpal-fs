@@ -3,8 +3,28 @@ import axios from "../../api/axios";
 import { useForm } from "react-hook-form";
 import type { FieldValues, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
+import { useEffect } from "react";
 
-const PetForm = () => {
+interface Pet {
+  name: string;
+  description: string;
+  status: string;
+  breed: string;
+  age: number;
+  size: string;
+  color: string;
+  gender: string;
+  medical_history?: string | null;
+  behavior?: string | null;
+  special_needs?: string | null;
+}
+
+interface PetFormProps {
+  submitButtonText?: string;
+  pet?: Pet | null;
+}
+
+const PetForm = ({ submitButtonText = "", pet }: PetFormProps) => {
   const schema = z.object({
     name: z.string().min(1).max(20),
     description: z.string(),
@@ -26,13 +46,51 @@ const PetForm = () => {
   });
   type ValidationSchemaType = z.infer<typeof schema>
 
-  const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<ValidationSchemaType>({ resolver: zodResolver(schema) });
+  console.log("Pet: ");
+  console.log(pet);
+  console.log(pet?.name);
+
+  const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<ValidationSchemaType>({ resolver: zodResolver(schema),
+
+  });
+
+  useEffect(() => {
+    reset({
+      name: pet?.name,
+      description: pet?.description,
+      status: pet?.status,
+      breed: pet?.breed,
+      age: pet?.age,
+      size: pet?.size,
+      color: pet?.color,
+      gender: pet?.gender,
+      medical_history: pet?.medical_history,
+      behavior: pet?.behavior,
+      special_needs: pet?.special_needs,
+    });
+  }, [reset,pet]);
 
   const onSubmit: SubmitHandler<ValidationSchemaType> = async (data) => {
     try {
-      const response = await axios.post('http://127.0.0.1:8000/pet_listings/', data);
+      const formData = new FormData();
+  
+      // Append all form data to the FormData object
+      Object.entries(data).forEach(([key, value]) => {
+        if (key === 'avatar' && value[0]) {
+          // If the key is 'avatar' (file) and there is a file selected
+          formData.append(key, value[0]);
+        } else {
+          formData.append(key, value);
+        }
+      });
+  
+      const response = await axios.put('http://127.0.0.1:8000/pet_listings/1/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
       console.log('Pet listing created successfully:', response.data);
-
     } catch (error: any) {
       console.error('Error creating pet listing:', error.message);
     }
@@ -85,9 +143,7 @@ const PetForm = () => {
       {errors.gender && <><div></div><p className="text-red-500">{errors.gender.message}</p></>}
 
       <label htmlFor="avatar" className="text-green-500">Avatar:</label>
-      <input {...register("avatar")} id="avatar" accept="image/*" type="file" className="w-full"
-        
-      />
+      <input {...register("avatar")} id="avatar" type="file" className="w-full"/>
       {errors.avatar && <><div></div><p className="text-red-500">{errors.avatar.message?.toString()}</p></>}
 
       <label htmlFor="medical_history" className="text-green-500">Medical History:</label>
@@ -102,9 +158,11 @@ const PetForm = () => {
       <textarea {...register("special_needs")} id="special_needs" placeholder="Special Needs" className="w-full" />
       {errors.special_needs && <><div></div><p className="text-red-500">{errors.special_needs.message}</p></>}
 
-      <button type="submit" disabled={isSubmitting} className="bg-blue-500 disabled:bg-gray-500 py-2 rounded w-full col-span-full">
-        Create Pet Listing!
-      </button>
+      {submitButtonText && (
+        <button type="submit" disabled={isSubmitting} className="bg-blue-500 disabled:bg-gray-500 py-2 rounded w-full col-span-full">
+          {submitButtonText}
+        </button>
+      )}
     </form>
   );
 };

@@ -1,21 +1,23 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from "react-router-dom";
-import AppForm from '../../components/PetForm';
-import { ajax_or_login } from '../../ajax';
 import PetForm from '../../components/PetForm';
 import axios from "../../api/axios";
 
 const PetDetail = () => {
     const { pk } = useParams();
     const [petDetails, setPetDetails] = useState({
-        name: "", 
-        breed: "", 
-        age: "", 
+        name: "",
+        description: "",
+        status: "",
+        breed: "",
+        age: 0,
+        size: "",
+        color: "",
+        gender: "",
+        medical_history: "",
+        behavior: "",
+        special_needs: "",
         avatar: "",
-        shelter: {
-            shelter_name: "",
-            address: "",
-        }
     });
     
 
@@ -28,6 +30,7 @@ const PetDetail = () => {
                     Authorization: `Bearer ${token}`,
                 },
             });
+            console.log("Data:");
             console.log(response.data);
             setPetDetails(response.data);
         } catch (error) {
@@ -46,14 +49,10 @@ const PetDetail = () => {
             </div>
             <div className="p-4 bg-white">
                 <img className="mx-auto w-full" alt="profile icon" src={petDetails.avatar}/>
-                {/* <form className="bg-gray-100 font-medium text-lg flex flex-col gap-2 bg-footer-bg p-4 rounded-lg">
-                    <div>
-                        <label className="text-green-500 font-cinzel">Name</label>
-                        <input className="" type="text" readOnly value={petDetails.name}></input>
-                    </div>       
-
-                </form> */}
-                <PetForm />
+                
+                {Object.keys(petDetails).length > 0 && (
+                    <PetForm submitButtonText="Update this pet!" pet={petDetails} />
+                )}
             </div>
         </div>
     </>

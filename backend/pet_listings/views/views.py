@@ -5,12 +5,12 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.exceptions import ValidationError
 from accounts.models import Shelter
 from drf_yasg.utils import swagger_auto_schema
-
+from django.core.exceptions import ObjectDoesNotExist
 from ..models import PetListing
 from ..serializers import PetListingSerializer
 
 
-LISTING_PAGINATION_SIZE = 10 # Number of results to display per page (by default)
+LISTING_PAGINATION_SIZE = 8 # Number of results to display per page (by default)
 LISTING_PAGINATION_SIZE_MAX = 20 # Maximum number of results to display per page
 LISTING_PAGINATION_SIZE_PARAM = 'page_size' # Query parameter to read page size from
 
@@ -94,7 +94,7 @@ class PetListingListCreate(ListCreateAPIView):
 
 class PetListingRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
     serializer_class = PetListingSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = []
     pagination_class = PetListingListPagination
 
     @swagger_auto_schema(auto_schema=None)
@@ -111,21 +111,36 @@ class PetListingRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
         """
             Update a pet listing belong to that shelter.
         """
+        # Check that the user is a shelter
+        shelter = getattr(self.request.user, 'shelter', None)
+        if shelter is None:
+            raise ValidationError({'detail': 'User must be a Shelter to update a Pet Listing.'})
+        
+        # Check that the user owns the object 
+        instance = self.get_object()
+        if instance.shelter != shelter:
+            raise ValidationError({'detail': 'User does not own the object'})
+        
         return super().put(request, *args, **kwargs)
     
     def delete(self, request, *args, **kwargs):
         """
             Delete a pet listing belong to that shelter.
         """
+        shelter = getattr(self.request.user, 'shelter', None)
+        if shelter is None:
+            raise ValidationError({'detail': 'User must be a Shelter to update a Pet Listing.'})
+        
+        # Check that the user owns the object 
+        instance = self.get_object()
+        if instance.shelter != shelter:
+            raise ValidationError({'detail': 'User does not own the object'})
+        
         return super().delete(request, *args, **kwargs)
 
     def get_object(self):
         # Ensure this user is a shelter (sekeers can't make pet listings)
         # NOTE: Yes, only the shelter can see the pet listing RUD (other shelters or seekers can't, but they can access it from the Create view above)
-        try:
-            _ = self.request.user.shelter
-        except Shelter.DoesNotExist:
-            raise ValidationError({'detail': 'User must be a Shelter to update a Pet Listing.'})
-
+        
         # Search for the pet listing with this id and owned by the current shelter
-        return get_object_or_404(PetListing, id=self.kwargs['pk'], shelter=self.request.user.shelter)
+        return get_object_or_404(PetListing, id=self.kwargs['pk'])
