@@ -6,6 +6,7 @@ import { DropDown, DropdownProvider } from '../../components/DropDown';
 import SearchPagination from "../../components/SearchPagination";
 import to_url_params from "../../api/urls"
 import { format } from 'date-fns';
+import moment from "moment";
 
 interface Notification {
     id: number;
@@ -30,6 +31,14 @@ const NotificationsPage: React.FC = () => {
         }
         return temp
     }
+
+    const types: { [key: string]: string } = {
+        'message': 'message',
+        'status_update': 'status update',
+        'pet_listing': 'pet listing',
+        'application': 'application',
+        'review': 'review',
+    };
 
     const [searchParams, setSearchParams] = useSearchParams();
     const [isLoading, setIsLoading] = useState(true);
@@ -118,6 +127,18 @@ const NotificationsPage: React.FC = () => {
         return <div>Error: {error}</div>;
     }
 
+    const onDelete = async (id: number) => {
+        try {
+            const response = await axios.delete(
+                `/notifications/${id}/`
+            );
+            await fetchNotifications();
+        } catch (err) {
+            setError("Failed to delete notification.");
+            console.error(err);
+        }
+    }
+
     return (
 
 
@@ -150,7 +171,12 @@ const NotificationsPage: React.FC = () => {
                                     aria-expanded="true"
                                     aria-controls="collapseOne"
                                 >
-                                    <span><small className={`${notification.is_read ? "hidden" : "text-red-600"}`}>NEW</small> [{format(notification.creation_time, 'dd/MM/yy')}] {notification.notification_type}</span>
+                                    <span>
+                                        <small className={`${notification.is_read ? "hidden" : "text-red-600"}`}>NEW</small> You have a new {types[notification.notification_type]}!
+                                        <br />
+                                        <small><i>{moment(notification.creation_time).fromNow()}</i></small>
+                                    </span>
+
 
                                     <div className="ml-auto flex">
                                         <span
@@ -184,6 +210,15 @@ const NotificationsPage: React.FC = () => {
                             >
                                 <div className="px-5 py-4">
                                     {notification.message}
+
+                                    <br />
+                                    <br />
+
+                                    <button
+                                        className="ml-auto bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                                        onClick={() => onDelete(notification.id)}>
+                                        Delete
+                                    </button>
                                 </div>
                             </TECollapse>
                         </div>
