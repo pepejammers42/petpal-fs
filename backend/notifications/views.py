@@ -36,7 +36,7 @@ class NotificationListCreate(ListCreateAPIView):
     def get_queryset(self):
         queryset = Notification.objects.all()
 
-        queryset = queryset.order_by('creation_time') # Sort notifications by creation time (2 mark)
+        queryset = queryset.order_by('-creation_time') # Sort notifications by creation time (2 mark)
         queryset = queryset.filter(recipient=self.request.user) # Users (shelter and seeker) can only view their own notifications (1 mark)
 
         is_read = self.request.query_params.get('is_read', False) # Default filter to show unread notifications

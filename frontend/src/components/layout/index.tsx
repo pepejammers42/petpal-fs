@@ -175,7 +175,7 @@ const Layout = (props: Props) => {
                             Pets
                           </Link>
                           <Link
-                            to="/explore"
+                            to="/search"
                             className="px-6 py-4 hover:py-5 hover:text-fg-alt-3 hover:bg-primary-100"
                           >
                             Explore
