@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
 import Layout from "./components/layout";
 import Home from "./pages/Home";
 import Shelter from "./pages/Shelter";
@@ -11,6 +11,11 @@ import PetAdoption from "./pages/PetAdoption";
 import PetCreation from "./pages/PetCreation";
 import Search from "./pages/Search";
 import Notifications from "./pages/Notifications";
+
+function PrivateRoute () {
+  const user = JSON.parse(localStorage.getItem('user') ?? "");
+  return user ? <Outlet /> : <Navigate to="/login" replace />;
+}
 
 function App() {
   return (
@@ -28,7 +33,9 @@ function App() {
               <Route path="/applications/pets/:petId/" element={<PetAdoption />} />
               <Route path="/pet_listings/" element={<PetCreation />} />
               <Route path="/search/" element={<Search />} />
-              <Route path="/notifications/" element={<Notifications />} />
+              <Route element={<PrivateRoute />}>
+                <Route path="/notifications/" element={<Notifications />} />
+              </Route>
 
             </Route>
           </Routes>
