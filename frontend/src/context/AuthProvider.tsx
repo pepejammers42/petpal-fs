@@ -11,6 +11,8 @@ type AuthProviderProps = {
   children: React.ReactNode;
 };
 
+
+
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const [token, setToken] = useState<string | null>(
     localStorage.getItem("token"),
@@ -46,6 +48,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           last_name,
           location,
           preference,
+          email,
+          password
         } = response.data;
         const seekerUserInfo: SeekerUser = {
           avatar,
@@ -54,10 +58,12 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           last_name,
           location,
           preference,
+          email,
+          password
         };
         setUserInfo(seekerUserInfo);
       } else if (userType === "shelter") {
-        const { avatar, phone_number, shelter_name, address, description } =
+        const { avatar, phone_number, shelter_name, address, description, email, password } =
           response.data;
         const shelterUserInfo: ShelterUser = {
           avatar,
@@ -65,6 +71,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           shelter_name,
           address,
           description,
+          email,
+          password
         };
         setUserInfo(shelterUserInfo);
       }

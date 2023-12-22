@@ -1,8 +1,10 @@
 import { createContext } from "react";
 
 export type AuthUser = {
+  email: string;
   avatar: string;
   phone_number: string;
+  password: string;
 };
 
 export type SeekerUser = AuthUser & {
