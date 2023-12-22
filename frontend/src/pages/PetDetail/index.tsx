@@ -30,11 +30,11 @@ const PetDetail = () => {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            console.log("Data:");
-            console.log(response.data);
+            // console.log("Data:");
+            // console.log(response.data);
             setPetDetails(response.data);
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     };
 
@@ -43,12 +43,12 @@ const PetDetail = () => {
     }, []);
 
     return <>
-        <div className="w-full max-w-md mx-auto pt-8">
+        <div className="w-full max-w-xl mx-auto">
             <div className="p-4" style={{ backgroundColor: '#c5dcaf' }}>
                 <h1 className="font-bold text-2xl">{petDetails.name} </h1>
             </div>
             <div className="p-4 bg-white">
-                <img className="mx-auto w-full" alt="profile icon" src={petDetails.avatar}/>
+                <img className="mx-auto w-full rounded-lg border-2 border-green-500 mb-2" alt="profile icon" src={petDetails.avatar}/>
                 
                 {Object.keys(petDetails).length > 0 && (
                     <PetForm submitButtonText="Update this pet!" pet={petDetails} />
