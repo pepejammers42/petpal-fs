@@ -142,7 +142,7 @@ const AppDetail: React.FC<AppDetailProps> = ({ appId, onUpdateStatus }) => {
     return (
         <div className="container mx-auto max-w-3xl mt-8 p-4 rounded overflow-hidden shadow-lg bg-white">
           
-          <Link to={`/pet_listings/${app.pet_listing.id}`}><p>Pet: {app.pet_listing.name}</p></Link>
+          <Link to={`/pet_listings/${app.pet_listing.id}`}><p className=' text-blue-700 font-bold underline'>Pet: {app.pet_listing.name}</p></Link>
           <p>Applicant: {app.applicant.first_name + " " + app.applicant.last_name}</p>
           <p>Creation Time: {(new Date(app.creation_time)).toLocaleString()}</p>
           <p>Last Update Time: {(new Date(app.last_update_time)).toLocaleString()}</p>

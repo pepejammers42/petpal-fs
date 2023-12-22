@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import axios from "../../api/axios";
 import { useSearchParams } from "react-router-dom";
-import { ajax } from '../../ajax' ;
+import { ajax, ajax_loggedout } from '../../ajax' ;
 
 type PetType = {
     id: number,

@@ -135,7 +135,7 @@ const ShelterReview = () => {
             <p className="text-xs text-gray-500">{(new Date(comment.created_at)).toLocaleString()}</p>
           </div>
         ))}
-        <p>{fetchError}</p>
+        <p>{fetchError.toString()}</p>
         <div className='flex gap-2 justify-end' >
                     {(query.page >= (count / 5) )?<button className="mt-4 bg-gray-500 text-white p-2 rounded" onClick={() => handlePageChange(query.page + 1)} disabled={true}>Prev</button>:<button className="mt-4 bg-blue-500 text-white p-2 rounded" onClick={() => handlePageChange(query.page + 1)}>Prev</button>}
                     {query.page===1? <button className="mt-4 bg-gray-500 text-white p-2 rounded" onClick={() => handlePageChange(query.page - 1)} disabled={true}>Next</button> :<button className="mt-4 bg-blue-500 text-white p-2 rounded" onClick={() => handlePageChange(query.page - 1)} disabled={query.page === 1}>Next</button>}
@@ -166,7 +166,7 @@ const ShelterReview = () => {
         <button type="submit" className="mt-4 bg-blue-500 text-white p-2 rounded font-bold  ">
           Send
         </button>
-        <p>{createError}</p>
+        <p>{createError.toString()}</p>
       </form>
     </div>
   );

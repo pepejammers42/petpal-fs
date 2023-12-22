@@ -17,6 +17,13 @@ export async function ajax(url, settings) {
     return await fetch(domain + url, settings);
 }
 
+export async function ajax_loggedout(url, settings) {
+    const domain = "http://localhost:8000";
+    
+    return await fetch(domain + url, settings);
+}
+
+
 export async function ajax_or_login(url, settings, navigate) {
     const token = "Bearer " + localStorage.getItem('token');
 

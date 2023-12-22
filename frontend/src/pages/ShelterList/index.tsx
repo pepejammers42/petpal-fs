@@ -1,5 +1,5 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ajax, ajax_or_login } from '../../ajax' ;
+import { ajax, ajax_or_login, ajax_loggedout } from '../../ajax' ;
 import { useEffect, useMemo, useState } from 'react';
 import ShelterListItem from '../../components/ShelterListItem'
 
@@ -28,7 +28,7 @@ const ShelterList = () => {
         const {page} = query;
         console.log(page);
         //ajax(`/applications/?page=${page}&status=${status}&sort_by=${sort_by}`, {method: "GET"})
-        ajax(`/accounts/shelter/?page=${page}`, {method: "GET"})
+        ajax_loggedout(`/accounts/shelter/?page=${page}`, {method: "GET"})
         .then(response => {
             if (response.ok){
                 return response.json();

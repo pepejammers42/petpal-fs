@@ -40,7 +40,7 @@ const ShelterDetail = () => {
             <ShelterPetList sname={shelterName} />
             <ShelterReview/>
             
-            <p>{error}</p>
+            <p>{error.toString()}</p>
             </div>
         </>
     )
