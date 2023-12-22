@@ -13,8 +13,7 @@ import Search from "./pages/Search";
 import Notifications from "./pages/Notifications";
 
 function PrivateRoute () {
-  const user = JSON.parse(localStorage.getItem('user') ?? "");
-  return user ? <Outlet /> : <Navigate to="/login" replace />;
+  return localStorage.getItem('user') ? <Outlet /> : <Navigate to="/login" replace />;
 }
 
 function App() {
