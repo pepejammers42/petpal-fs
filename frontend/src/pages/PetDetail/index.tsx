@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import PetForm from '../../components/PetForm';
 import axios from "../../api/axios";
 
@@ -51,8 +51,11 @@ const PetDetail = () => {
                 
                 {/* Seeker */}
                 {Object.keys(petDetails).length > 0 && localStorage.getItem("user") === "seeker" && (
-                    <PetForm submit_button_text="" read_only={true} method={'put'} endpoint_add={"/"+pk+"/"} onFormSubmit={handleFormSubmit} pet={petDetails} />
+                    <PetForm submit_button_text="" read_only={true} method={'put'} endpoint_add={"/"+pk+"/"} onFormSubmit={handleFormSubmit} pet={petDetails} />   
                 )}
+                {Object.keys(petDetails).length > 0 && localStorage.getItem("user") === "seeker" && (
+                    <Link to={`/applications/pets/${pk}`} className="block w-full bg-blue-500 disabled:bg-gray-500 py-2 rounded text-center hover:text-gray-100 active:scale-95 active:bg-blue-800"> Apply for this pet! </Link>  
+                )}                
             </div>
         </div>
     </>
