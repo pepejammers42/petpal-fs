@@ -208,7 +208,8 @@ const Search: React.FC = () => {
                   <div className="p-4">
                     
                     <h1 className="text-2xl font-medium text-fg-accent pb-2">{pet.name}</h1>
-                    <small className="text-s">{pet.age}-year-old {pet.gender} {pet.breed}</small>
+                    <small>{pet.age}-year-old {pet.gender} {pet.breed}</small> <br/>
+                    <small className="capitalize">{pet.status}</small>
                   </div>
                 </Link>
               ))}
