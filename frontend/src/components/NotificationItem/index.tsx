@@ -87,7 +87,7 @@ const NotificationItem: React.FC<NotificationProps> = ({
 
   return (
 
-    <div className="rounded-t-lg border border-neutral-200 bg-white" key={idx}>
+    <div className="rounded-lg border border-neutral-200 bg-white" key={idx}>
       <h2 className="mb-0" id="headingOne">
         <button
           className={`${activeElement === `${idx}` &&
@@ -101,7 +101,7 @@ const NotificationItem: React.FC<NotificationProps> = ({
           <span>
             <small className={`${notification.is_read ? "hidden" : "text-red-600"}`}>NEW</small> You have a new {types[notification.notification_type]}!
             <br />
-            <small><i>{moment(notification.creation_time).fromNow()}</i></small>
+            <small className="text-primary-300"><i>{moment(notification.creation_time).fromNow()}</i></small>
           </span>
 
 

@@ -23,10 +23,15 @@ const NotificationsPage: React.FC = () => {
             page: searchParams.get("page") ?? 1,
             is_read: searchParams.get("is_read") ?? []
         }
-
         if (!Array.isArray(temp.is_read)) {
-            temp.is_read = (temp.is_read == "Read") ? "True" : "False"
+            if (temp.is_read == "All") {
+                temp.is_read = [];}
+            else{
+            temp.is_read = (temp.is_read == "Read") ? "True" : "False"}
         }
+        // if (!Array.isArray(temp.is_read)) {
+        //     temp.is_read = (temp.is_read == "Read") ? "True" : "False"
+        // }
         return temp
     }
 
@@ -36,7 +41,7 @@ const NotificationsPage: React.FC = () => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [activeElement, setActiveElement] = useState("");
     const [maxCount, setMaxCount] = useState(0);
-    const statuses = ["Read", "Unread"]
+    const statuses = ["All", "Read", "Unread"]
 
     const query = useMemo(
         () => create_url_params(searchParams)
@@ -96,7 +101,7 @@ const NotificationsPage: React.FC = () => {
                 <DropDown
                     data={statuses}
                     category="Read Status"
-                    enableSearch={true}
+                    enableSearch={false}
                     value={searchParams.get("is_read") ?? "All"}
                     onChange={(value) => handleFilterChange("is_read", value)} />
             </div>
