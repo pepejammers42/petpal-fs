@@ -1,9 +1,9 @@
-#profile-pic {
+#profile-pic-sbi {
     overflow: clip;
     vertical-align: middle;
 }
 
-#circle-container {
+#circle-container-sbi {
     width: 180px;
     height: 180px;
     border-radius: 50%;

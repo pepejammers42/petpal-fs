@@ -23,8 +23,8 @@ const ShelterListItem = ({shelter}:{shelter:ShelterType}) => {
             <h3 className="text-lg font-bold mb-2">{shelter.shelter_name}</h3>
             
             <div className='flex flex-row gap-8'>
-            <div id="circle-container">
-                 <img id="profile-pic"  alt="profile icon" src={shelter.avatar || userAvatar}/>
+            <div id="circle-container-sli">
+                 <img id="profile-pic-sli"  alt="profile icon" src={shelter.avatar || userAvatar}/>
             </div>
             
             <div>
