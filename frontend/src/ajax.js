@@ -3,7 +3,7 @@
  */
 
 export async function ajax(url, settings) {
-    const domain = "http://localhost:8000";
+    const domain = "http://18.221.149.61:8000";
     const token = "Bearer " + localStorage.getItem('token');
 
     if ('headers' in settings) {
@@ -18,7 +18,7 @@ export async function ajax(url, settings) {
 }
 
 export async function ajax_loggedout(url, settings) {
-    const domain = "http://localhost:8000";
+    const domain = "http://18.221.149.61:8000";
     
     return await fetch(domain + url, settings);
 }

@@ -19,7 +19,7 @@ const ShelterListItem = ({shelter}:{shelter:ShelterType}) => {
 
     return (
         <Link to={`/shelter-detail/${shelter.id}/`}>
-        <div key={"shelter " + shelter.id} className="app-list-item flex flex-col mx-auto max-w-3xl bg-slate-50 rounded-lg p-6 dark:bg-slate-800 dark:highlight-white/5">
+        <div key={"shelter " + shelter.id} className="app-list-item flex flex-col mx-auto max-w-3xl bg-white rounded-lg p-6 dark:bg-white-800 dark:highlight-white/5">
             <h3 className="text-lg font-bold mb-2">{shelter.shelter_name}</h3>
             
             <div className='flex flex-row gap-8'>

@@ -115,22 +115,10 @@ const Layout = () => {
                             Home
                           </Link>
                           <Link
-                            to="/shelter"
+                            to="/shelter-list/"
                             className="px-6 py-4 hover:py-5 hover:text-fg-alt-3 hover:bg-primary-100"
                           >
                             Shelters
-                          </Link>
-                          <Link
-                            to="/pets"
-                            className="px-6 py-4 hover:py-5 hover:text-fg-alt-3 hover:bg-primary-100"
-                          >
-                            Pets
-                          </Link>
-                          <Link
-                            to="/favorites"
-                            className="px-6 py-4 hover:py-5 hover:text-fg-alt-3 hover:bg-primary-100"
-                          >
-                            Favorites
                           </Link>
                         </>
                       ) : localStorage.getItem("user") === "shelter" ? (
@@ -145,7 +133,7 @@ const Layout = () => {
                             My Shelter Page
                           </Link>
                           <Link
-                            to="/list-pet"
+                            to="/pet_listings/"
                             className="px-6 py-4 hover:py-5 hover:text-fg-alt-3 hover:bg-primary-100"
                           >
                             List a New Pet
@@ -160,16 +148,10 @@ const Layout = () => {
                             Home
                           </Link>
                           <Link
-                            to="/shelter"
+                            to="/shelter-list"
                             className="px-6 py-4 hover:py-5 hover:text-fg-alt-3 hover:bg-primary-100"
                           >
                             Shelter
-                          </Link>
-                          <Link
-                            to="/pets"
-                            className="px-6 py-4 hover:py-5 hover:text-fg-alt-3 hover:bg-primary-100"
-                          >
-                            Pets
                           </Link>
                           {/* <Link
                             to="/search"
@@ -254,12 +236,6 @@ const Layout = () => {
                   >
                     Pets
                   </Link>
-                  <Link
-                    to="/favorites"
-                    className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
-                  >
-                    Favorites
-                  </Link>
                 </>
               ) : localStorage.getItem("user") === "shelter" ? (
                 // Render for Shelter
@@ -271,7 +247,7 @@ const Layout = () => {
                     My Shelter Page
                   </Link>
                   <Link
-                    to="/list-pet"
+                    to="/pet_listings//"
                     className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
                   >
                     List a New Pet
