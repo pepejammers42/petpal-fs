@@ -10,7 +10,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 .eslintrc.cjs
-
+frontend/build/*
 node_modules
 dist
 dist-ssr
@@ -44,3 +44,4 @@ __pycache__/
 # venv
 venv/
 frontend/package-lock.json
+frontend/build/asset-manifest.json

@@ -247,7 +247,7 @@ const Layout = () => {
                     My Shelter Page
                   </Link>
                   <Link
-                    to="/pet_listings//"
+                    to="/pet_listings/"
                     className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
                   >
                     List a New Pet
