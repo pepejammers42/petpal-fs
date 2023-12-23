@@ -77,7 +77,7 @@ const Layout = () => {
       </Link>
       {localStorage.getItem("user") === "shelter" && (
         <Link
-          to={`/shelter-detail/${localStorage.getItem("userID")}`}
+          to={`/shelter-management/${localStorage.getItem("userID")}`}
           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
         >
           Manage Shelter
@@ -136,7 +136,7 @@ const Layout = () => {
                         // Render for Shelter
                         <>
                           <Link
-                            to={`/shelter-management/${localStorage.getItem(
+                            to={`/shelter-detail/${localStorage.getItem(
                               "userID",
                             )}`}
                             className="px-6 py-4 hover:py-5 hover:text-fg-alt-3 hover:bg-primary-100"
@@ -316,7 +316,7 @@ const Layout = () => {
           className={`${flexBetween} z-30 w-full bg-gradient-header h-12 md:h-20 px-4`}
         >
           <div className={`${flexBetween} flex-col mx-auto w-[1194px] gap-2`}>
-            <div
+            {/* <div
               className={`${flexBetween} text-fg-alt-1 mx-auto gap-20 border-b-2 border-b-primary-100 font-fahkwang`}
             >
               <p>About</p>
@@ -324,7 +324,7 @@ const Layout = () => {
               <p>Donate</p>
               <p>FAQs</p>
               <p>Contact Us</p>
-            </div>
+            </div> */}
             <p className="font-cinzel text-fg-alt-2">
               Copyright © 2023, CSC309 PetPal Project
             </p>
