@@ -75,12 +75,14 @@ const Layout = () => {
       >
         My Applications
       </Link>
-      <Link
-        to={`/shelter-detail/${localStorage.getItem("userID")}`}
-        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-      >
-        Manage Shelter
-      </Link>
+      {localStorage.getItem("user") === "shelter" && (
+        <Link
+          to={`/shelter-detail/${localStorage.getItem("userID")}`}
+          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+        >
+          Manage Shelter
+        </Link>
+      )}
     </div>
   );
   const handleLogout = async () => {
