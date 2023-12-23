@@ -109,6 +109,8 @@ const AppDetail: React.FC<AppDetailProps> = ({ appId, onUpdateStatus }) => {
           return ;
         }
         setUserType(usertype);
+
+
       } catch (error) {
         setUserInfoError("failed to get user information: " + error);
       }
@@ -160,8 +162,9 @@ const AppDetail: React.FC<AppDetailProps> = ({ appId, onUpdateStatus }) => {
               <select
                 value={newStatus}
                 onChange={(e) => setNewStatus(e.target.value)}
-                disabled={!isEditing || (newStatus !== "pending" && newStatus !== "accepted")}
+                disabled={!isEditing }
               >
+                <option value=""></option>
                 <option value="withdrawn">withdrawn</option>
               </select>
               
@@ -175,8 +178,9 @@ const AppDetail: React.FC<AppDetailProps> = ({ appId, onUpdateStatus }) => {
               <select
                 value={newStatus}
                 onChange={(e) => setNewStatus(e.target.value)}
-                disabled={!isEditing || (newStatus !== "pending")}
+                disabled={!isEditing }
               >
+                <option value=""></option>
                 <option value="accepted">accepted</option>
                 <option value="denied">denied</option>
               </select>
