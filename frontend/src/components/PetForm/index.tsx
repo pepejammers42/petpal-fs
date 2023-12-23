@@ -82,7 +82,7 @@ const PetForm = ({ submit_button_text, read_only, endpoint_add, method, onFormSu
         }
       });
   
-      await axios[method]('http://127.0.0.1:8000/pet_listings'+endpoint_add, formData, {
+      await axios[method]('/pet_listings'+endpoint_add, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
