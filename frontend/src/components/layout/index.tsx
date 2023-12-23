@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import { ChevronDoubleDownIcon, BellIcon } from "@heroicons/react/24/solid";
 import { Outlet, Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 // TODO: responsive design (scaling elements)
 // TODO: css design update
@@ -21,6 +22,7 @@ const Layout = () => {
   let menuRef = useRef<HTMLDivElement>(null);
   let profileRef = useRef<HTMLImageElement>(null);
   let iconRef = useRef<HTMLImageElement>(null);
+  let navigate = useNavigate();
 
   useEffect(() => {
     let handler = (e: MouseEvent) => {
@@ -73,11 +75,18 @@ const Layout = () => {
       >
         My Applications
       </Link>
+      <Link
+        to={`/shelter-detail/${localStorage.getItem("userID")}`}
+        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+      >
+        Manage Shelter
+      </Link>
     </div>
   );
   const handleLogout = async () => {
     try {
       logout();
+      navigate("/");
     } catch (error) {
       // Handle login errors, e.g., showing an error message
     }
@@ -137,6 +146,12 @@ const Layout = () => {
                             className="px-6 py-4 hover:py-5 hover:text-fg-alt-3 hover:bg-primary-100"
                           >
                             List a New Pet
+                          </Link>
+                          <Link
+                            to="/shelter-list"
+                            className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
+                          >
+                            All Shelters
                           </Link>
                         </>
                       ) : (
@@ -251,6 +266,12 @@ const Layout = () => {
                     className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
                   >
                     List a New Pet
+                  </Link>
+                  <Link
+                    to="/shelter-list"
+                    className="px-6 py-4 hover:py-4 hover:text-fg-alt-3 hover:bg-primary-100"
+                  >
+                    All Shelters
                   </Link>
                 </>
               ) : (

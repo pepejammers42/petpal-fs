@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import type { FieldValues } from "react-hook-form";
 import { z } from "zod";
 import axios from "../../api/axios";
+import { useNavigate } from "react-router-dom";
 
 const schema = z
   .object({
@@ -34,6 +35,7 @@ function SignupShelter() {
     resolver: zodResolver(schema),
   });
   const avatar = watch("avatar");
+  let navigate = useNavigate();
 
   const onSubmit = async (data: FieldValues) => {
     console.log("Form Data:", data.avatar);
@@ -59,6 +61,7 @@ function SignupShelter() {
       });
 
       console.log("Success:", response.data);
+      navigate("/login");
     } catch (error) {
       console.log("smth went wrong");
     }
